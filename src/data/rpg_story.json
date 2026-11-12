@@ -1,0 +1,188 @@
+{
+  "title": "ValenTIC y el Semáforo de las Emociones",
+  "prologue": [
+    {
+      "id": "pro_1",
+      "speaker": "Valentic",
+      "text": "¡Hola! Soy Valentic. Hoy acompañarás a Alex, un estudiante como tú.",
+      "voiceKey": "pro_1"
+    },
+    {
+      "id": "pro_2",
+      "speaker": "Valentic",
+      "text": "Cuando hay gritos en casa, una voz llamada La Sombra quiere que respondamos peleando en el colegio.",
+      "voiceKey": "pro_2"
+    },
+    {
+      "id": "pro_3",
+      "speaker": "Valentic",
+      "text": "Aprenderás a usar mi Semáforo: Rojo para respirar, Amarillo para pensar y Verde para hablar con respeto.",
+      "voiceKey": "pro_3"
+    }
+  ],
+  "tutorial": {
+    "welcome": "Mueve a Alex con las flechas o tocando el piso. Primero recoge tu mochila azul.",
+    "backpack": "¡Bien! Llevas tus cuadernos. Ahora acércate al espejo brillante.",
+    "mirrorPrompt": "¡Mira! En el espejo aparece La Sombra. Vamos a practicar la Luz Roja: mantén presionado para respirar.",
+    "mirrorDone": "¡Genial! Ganaste 1 Energía de Calma. Ahora sal por la puerta de madera.",
+    "doorHint": "Primero recoge tu mochila y practica en el espejo."
+  },
+  "diary": {
+    "title": "Página 1 · Romper el eco",
+    "summary": "Los gritos de alguien cansado no son tu culpa. Si paras, respiras y hablas con calma, evitas llevarte la rabia al colegio.",
+    "tip": "Recuerda el orden: 1. Qué pasó · 2. Cómo me siento · 3. Qué pido con respeto."
+  },
+  "npcs": {
+    "sofia": {
+      "name": "Sofía",
+      "portrait": "portrait_sofia",
+      "greeting": "¡Hola Alex! Si alguien te molesta hoy, respira primero. ¡Cuentas conmigo!",
+      "rewardMsg": "Sofía te animó (+1 ⚡ Energía de Calma)."
+    },
+    "ricardo": {
+      "name": "Profe Ricardo",
+      "portrait": "portrait_ricardo",
+      "greeting": "Buenos días, Alex. Recuerda que en orientación siempre tienes un espacio seguro para hablar."
+    }
+  },
+  "encounters": {
+    "hogar_elena": {
+      "id": "hogar_elena",
+      "characterName": "Elena (Mamá)",
+      "portrait": "portrait_elena",
+      "provocation": "\"¡Alex! Dejaste los platos sucios y ya voy tarde al trabajo. ¡Nunca ayudas!\"",
+      "redTip": "¡Alto! Apaga las 3 chispas de rabia manteniendo el botón de respirar.",
+      "decoder": {
+        "prompt": "¿Por qué crees que mamá gritó así?",
+        "options": [
+          {
+            "icon": "😴",
+            "text": "Está agotada y apurada por su trabajo.",
+            "isCorrect": true,
+            "feedback": "¡Bien visto! Su cansancio no es contra ti. (+1 ⚡ Energía)"
+          },
+          {
+            "icon": "😡",
+            "text": "Me odia y quiere hacerme sentir mal.",
+            "isCorrect": false,
+            "feedback": "Pensar que te odia sube tu tensión. (+10% Tensión)"
+          },
+          {
+            "icon": "😈",
+            "text": "Le divierte pelear todas las mañanas.",
+            "isCorrect": false,
+            "feedback": "Eso alimenta el enojo sin buscar la causa. (+10% Tensión)"
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Gritale que es injusta y tira la puerta! Si te callas, eres débil.\"",
+        "options": [
+          {
+            "text": "Si tiro la puerta, llegaré bravo al colegio. Mejor hablo con calma.",
+            "isCorrect": true,
+            "feedback": "¡Excelente! Convertiste la rabia en calma."
+          },
+          {
+            "text": "Le grito más fuerte para que me respete.",
+            "isCorrect": false,
+            "feedback": "Gritar de vuelta hace más grande el problema."
+          },
+          {
+            "text": "Me quedo callado guardando toda la rabia.",
+            "isCorrect": false,
+            "feedback": "Guardar rabia sin hablar hace que explotes después."
+          }
+        ],
+        "failText": "Alex sale dando un portazo. La Sombra lo seguirá hasta el colegio."
+      },
+      "cnv": {
+        "hecho": [
+          { "text": "Mamá, cuando me gritas en la mañana...", "valid": true },
+          { "text": "Tú siempre estás brava conmigo...", "valid": false }
+        ],
+        "sentimiento": [
+          { "text": "...me asusto y me pongo triste...", "valid": true },
+          { "text": "...me da igual lo que digas...", "valid": false }
+        ],
+        "peticion": [
+          { "text": "...háblame con calma y en la tarde lavo los platos.", "valid": true },
+          { "text": "...lávalos tú sola si tienes prisa.", "valid": false }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Elena suspira y sonríe suave: \"Perdón, hijo. Ve tranquilo al colegio.\"",
+        "badMapLine": "Hubo gritos en la cocina. ¡La Sombra ahora camina detrás de ti!"
+      }
+    },
+    "colegio_mateo": {
+      "id": "colegio_mateo",
+      "characterName": "Mateo (Compañero)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Quítate del camino, estorbo! ¿O vas a llorar por tus cuadernos?\"",
+      "redTip": "¡Alto! No empujes. Respira y enfría las chispas antes de responder.",
+      "decoder": {
+        "prompt": "¿Por qué Mateo se burla frente a los demás?",
+        "options": [
+          {
+            "icon": "🎭",
+            "text": "Quiere llamar la atención del grupo por inseguridad.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! Entenderlo evita caer en su trampa. (+1 ⚡ Energía)"
+          },
+          {
+            "icon": "👿",
+            "text": "Todo el colegio está en mi contra.",
+            "isCorrect": false,
+            "feedback": "Creer eso te hace sentir amenazado por todos. (+10% Tensión)"
+          },
+          {
+            "icon": "🥊",
+            "text": "Solo entiende si le pego primero.",
+            "isCorrect": false,
+            "feedback": "Responder con golpes inicia una pelea. (+10% Tensión)"
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Empújalo contra los casilleros ahora mismo o se reirán de ti!\"",
+        "options": [
+          {
+            "text": "Poner límites con voz firme es fuerza; pelear solo trae problemas.",
+            "isCorrect": true,
+            "feedback": "¡Genial! La Sombra se vuelve una luz protectora."
+          },
+          {
+            "text": "Lo empujo duro para que no me moleste más.",
+            "isCorrect": false,
+            "feedback": "Empujar inicia una pelea en el pasillo."
+          },
+          {
+            "text": "Agacho la cabeza y no digo nada.",
+            "isCorrect": false,
+            "feedback": "No poner límites deja que la burla continúe."
+          }
+        ],
+        "failText": "Alex empuja a Mateo y el pasillo se llena de gritos."
+      },
+      "cnv": {
+        "hecho": [
+          { "text": "Mateo, al tirar mis cuadernos y burlarte...", "valid": true },
+          { "text": "Como eres un grosero buscapeleas...", "valid": false }
+        ],
+        "sentimiento": [
+          { "text": "...me molesta y me parece injusto...", "valid": true },
+          { "text": "...me dan ganas de golpearte...", "valid": false }
+        ],
+        "peticion": [
+          { "text": "...ayúdame a recogerlos y hablemos con respeto.", "valid": true },
+          { "text": "...lárgate si no quieres problemas.", "valid": false }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo se sorprende, recoge un cuaderno y se aleja en calma. ¡Rompiste el eco!",
+        "badMapLine": "El choque en el pasillo dejó mucha tensión. Puedes intentarlo de nuevo para calmar el día."
+      }
+    }
+  }
+}

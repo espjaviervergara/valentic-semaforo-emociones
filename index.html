@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ValenTIC y el Semáforo de las Emociones — RPG</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="game-shell">
+    <div id="game-container" class="game-container" aria-label="ValenTIC y el Semáforo de las Emociones"></div>
+
+    <div id="protocol-warning" class="protocol-warning" hidden>
+      <strong>Nota:</strong> Abre el juego con un servidor local (<code>python3 -m http.server 8080</code>) o desde GitHub Pages para cargar los mapas, voces y diálogos.
+    </div>
+  </main>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('protocol-warning').hidden = false;
+    }
+  </script>
+  <script src="./lib/phaser.min.js"></script>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
