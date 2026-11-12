@@ -1,7 +1,7 @@
 export const TILE_SIZE = 48;
 export const MAP_COLS = 20;
 export const MAP_ROWS = 11;
-export const WALKABLE_TILES = new Set([0, 1, 2, 3, 13, 17]);
+export const WALKABLE_TILES = new Set([0, 1, 2, 3, 13, 17, 20, 21, 22]);
 
 // 20 cols x 11 rows (960x528 -> y offset 12px)
 export const MAPS = {
@@ -74,12 +74,38 @@ export const MAPS = {
       [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
     ],
     interactables: [
-      { id: 'door_finish', type: 'door', col: 17, row: 1, label: 'Terminar Día', badge: '★' },
+      { id: 'door_patio', type: 'door', col: 17, row: 1, label: 'Salir al Patio', badge: '▸' },
     ],
     npcs: [
       { id: 'sofia', sprite: 'rpg_sofia', col: 5, row: 3, label: 'Sofía', badge: '?' },
-      { id: 'mateo', sprite: 'rpg_mateo', col: 8, row: 5, label: 'Mateo', badge: '!' },
+      { id: 'mateo', sprite: 'rpg_mateo', col: 8, row: 5, label: 'Mateo (Pasillo)', badge: '!' },
       { id: 'ricardo', sprite: 'rpg_ricardo', col: 13, row: 2, label: 'Profe Ricardo', badge: '?' },
+    ],
+  },
+  patio: {
+    id: 'patio',
+    name: 'Colegio · Patio y Cancha',
+    bgm: 'bgm_colegio',
+    spawn: { col: 2, row: 5 },
+    grid: [
+      [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+      [4, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 4],
+      [4, 24, 20, 20, 26, 20, 21, 21, 21, 21, 21, 21, 21, 21, 20, 26, 20, 24, 20, 4],
+      [4, 20, 20, 20, 20, 20, 21, 22, 22, 22, 22, 22, 22, 21, 20, 20, 20, 20, 20, 4],
+      [4, 20, 20, 20, 20, 20, 25, 21, 21, 21, 21, 21, 21, 25, 20, 20, 20, 20, 20, 4],
+      [4, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 20, 20, 20, 20, 13, 4],
+      [4, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 20, 20, 20, 20, 20, 4],
+      [4, 20, 20, 20, 20, 20, 21, 22, 22, 22, 22, 22, 22, 21, 20, 20, 20, 20, 20, 4],
+      [4, 24, 20, 20, 26, 20, 21, 21, 21, 21, 21, 21, 21, 21, 20, 26, 20, 24, 20, 4],
+      [4, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 4],
+      [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+    ],
+    interactables: [
+      { id: 'door_finish', type: 'door', col: 18, row: 5, label: 'Terminar Día', badge: '★' },
+    ],
+    npcs: [
+      { id: 'sofia_patio', sprite: 'rpg_sofia', col: 4, row: 3, label: 'Sofía', badge: '?' },
+      { id: 'mateo_patio', sprite: 'rpg_mateo', col: 10, row: 5, label: 'Mateo (Cancha)', badge: '!' },
     ],
   },
 };

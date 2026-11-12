@@ -36,9 +36,11 @@ export class WorldScene extends Phaser.Scene {
       floorLayer.fill(0, 0, 0, 20, 11);
     } else if (mapId === 'hogar') {
       floorLayer.fill(1, 0, 0, 20, 11);
-    } else {
+    } else if (mapId === 'colegio') {
       floorLayer.fill(2, 0, 0, 11, 11);
       floorLayer.fill(3, 11, 0, 9, 11);
+    } else {
+      floorLayer.fill(20, 0, 0, 20, 11);
     }
     this.layer = this.tilemap.createLayer(0, tileset, 0, MAP_OFFSET_Y);
 
@@ -283,12 +285,16 @@ export class WorldScene extends Phaser.Scene {
     if (this.mapData.id === 'cuarto') {
       if (!run.backpackTaken) obj = 'Recoge tu mochila azul';
       else if (!run.mirrorDone) obj = 'Acércate al espejo brillante';
-      else obj = 'Sal por la puerta al comedor';
+      else obj = 'Camina a la puerta para ir al comedor';
     } else if (this.mapData.id === 'hogar') {
       if (!run.elenaResolved) obj = 'Habla con mamá (Elena)';
-      else obj = 'Sal por la puerta al colegio';
+      else obj = 'Camina a la puerta para ir al colegio';
     } else if (this.mapData.id === 'colegio') {
-      if (!run.mateoResolved) obj = 'Explora y habla con Mateo (!)';
+      if (!run.mateoResolved) obj = 'Caso 1: Habla con Mateo en el pasillo (!)';
+      else if (!run.aulaResolved) obj = 'Caso 2: Habla con Profe Ricardo en el aula (!)';
+      else obj = 'Sal por la puerta arriba hacia el Patio';
+    } else if (this.mapData.id === 'patio') {
+      if (!run.patioResolved) obj = 'Caso 3: Habla con Mateo en la cancha (!)';
       else obj = 'Ve a la salida (★) para terminar el día';
     }
     this.objectiveText.setText(`Objetivo: ${obj}`);
@@ -308,9 +314,16 @@ export class WorldScene extends Phaser.Scene {
       this.markers.door_colegio.badgeObj.setSymbol(run.elenaResolved ? '▸' : '🔒', run.elenaResolved ? 0x22c55e : 0x64748b);
     } else if (this.mapData.id === 'colegio') {
       this.npcSprites.sofia.badgeObj.setSymbol(run.sofiaTalked ? '✓' : '?', run.sofiaTalked ? 0x22c55e : 0x38bdf8);
-      this.npcSprites.ricardo.badgeObj.setSymbol(run.ricardoTalked ? '✓' : '?', run.ricardoTalked ? 0x22c55e : 0x38bdf8);
       this.npcSprites.mateo.badgeObj.setSymbol(run.mateoResolved ? '✓' : '!', run.mateoResolved ? 0x22c55e : 0xfbbf24);
-      this.markers.door_finish.badgeObj.setSymbol(run.mateoResolved ? '★' : '🔒', run.mateoResolved ? 0x22c55e : 0x64748b);
+      const ricardoSym = run.aulaResolved ? '✓' : (run.mateoResolved ? '!' : '?');
+      const ricardoCol = run.aulaResolved ? 0x22c55e : (run.mateoResolved ? 0xfbbf24 : 0x38bdf8);
+      this.npcSprites.ricardo.badgeObj.setSymbol(ricardoSym, ricardoCol);
+      const patioOpen = run.mateoResolved && run.aulaResolved;
+      this.markers.door_patio.badgeObj.setSymbol(patioOpen ? '▸' : '🔒', patioOpen ? 0x22c55e : 0x64748b);
+    } else if (this.mapData.id === 'patio') {
+      this.npcSprites.sofia_patio.badgeObj.setSymbol(run.sofiaPatioTalked ? '✓' : '?', run.sofiaPatioTalked ? 0x22c55e : 0x38bdf8);
+      this.npcSprites.mateo_patio.badgeObj.setSymbol(run.patioResolved ? '✓' : '!', run.patioResolved ? 0x22c55e : 0xfbbf24);
+      this.markers.door_finish.badgeObj.setSymbol(run.patioResolved ? '★' : '🔒', run.patioResolved ? 0x22c55e : 0x64748b);
     }
   }
 
@@ -322,9 +335,11 @@ export class WorldScene extends Phaser.Scene {
       this.showDialogue('Valentic', 'valentic', 'Estás en la cocina. Camina hacia mamá (!) para hablar con ella.', null);
     } else if (this.mapData.id === 'colegio' && !run.mateoResolved) {
       const msg = run.shadowFollowing
-        ? '¡Cuidado! La Sombra te siguió desde casa. Habla con Sofía (?) antes de cruzar con Mateo (!).'
-        : 'Llegaste al colegio. Puedes saludar a Sofía o al Profe Ricardo antes de hablar con Mateo (!).';
+        ? '¡Cuidado! La Sombra te siguió desde casa. Saluda a Sofía (?) y habla con Mateo (!).'
+        : 'Llegaste al colegio. Tienes dos retos aquí: primero con Mateo (!) en el pasillo y luego en el aula.';
       this.showDialogue('Valentic', 'valentic', msg, null);
+    } else if (this.mapData.id === 'patio' && !run.patioResolved) {
+      this.showDialogue('Valentic', 'valentic', 'Saliste al patio de recreo. Acércate a Mateo en la cancha (!) para el último reto.', null);
     }
   }
 
@@ -393,13 +408,13 @@ export class WorldScene extends Phaser.Scene {
   }
 
   findInteractableAtPoint(x, y) {
-    return this.getAllInteractables().find((item) => Phaser.Math.Distance.Between(x, y, item.x, item.y) <= 44) || null;
+    return this.getAllInteractables().find((item) => Phaser.Math.Distance.Between(x, y, item.x, item.y) <= 52) || null;
   }
 
   tryInteractNearest() {
     if (this.activeModal || this.dialogueOpen) return;
     let best = null;
-    let bestDist = 76;
+    let bestDist = 86;
     this.getAllInteractables().forEach((item) => {
       const d = Phaser.Math.Distance.Between(this.alex.x, this.alex.y - 14, item.x, item.y);
       if (d < bestDist) {
@@ -410,6 +425,28 @@ export class WorldScene extends Phaser.Scene {
     if (best) {
       this.triggerInteract(best);
     }
+  }
+
+  isDoorUnlocked(doorId) {
+    const run = gameState.run;
+    if (doorId === 'door_hogar') return run.mirrorDone;
+    if (doorId === 'door_colegio') return run.elenaResolved;
+    if (doorId === 'door_patio') return run.mateoResolved && run.aulaResolved;
+    if (doorId === 'door_finish') return run.patioResolved;
+    return false;
+  }
+
+  checkAutoDoor() {
+    for (const obj of Object.values(this.markers)) {
+      if (obj.type !== 'door') continue;
+      if (!this.isDoorUnlocked(obj.id)) continue;
+      const d = Phaser.Math.Distance.Between(this.alex.x, this.alex.y - 12, obj.x, obj.y);
+      if (d <= 44) {
+        this.triggerInteract(obj);
+        return true;
+      }
+    }
+    return false;
   }
 
   triggerInteract(item) {
@@ -509,16 +546,36 @@ export class WorldScene extends Phaser.Scene {
     }
 
     if (item.id === 'ricardo') {
-      const rData = gameState.story.npcs.ricardo;
-      run.ricardoTalked = true;
-      this.refreshBadges();
-      this.showDialogue('Profe Ricardo', 'portrait_ricardo', rData.greeting, 'npc_ricardo');
+      if (!run.mateoResolved) {
+        const rData = gameState.story.npcs.ricardo;
+        run.ricardoTalked = true;
+        this.refreshBadges();
+        this.showDialogue('Profe Ricardo', 'portrait_ricardo', rData.greeting, 'npc_ricardo');
+        return;
+      }
+      if (!run.aulaResolved) {
+        this.startEncounter('colegio_aula', (isGood) => {
+          run.aulaResolved = true;
+          run.aulaGood = isGood;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.colegio_aula.outcome;
+          this.showDialogue(
+            isGood ? 'Profe Ricardo' : 'Valentic',
+            isGood ? 'portrait_ricardo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            isGood ? 'colegio_aula_good' : 'colegio_aula_bad'
+          );
+        });
+        return;
+      }
+      this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Buen trabajo! Ya puedes salir por la puerta hacia el Patio.', null);
       return;
     }
 
     if (item.id === 'mateo') {
       if (run.mateoResolved) {
-        this.showDialogue('Mateo', 'portrait_mateo', 'Ya resolviste el encuentro con Mateo. ¡Ve a la salida (★)!', null);
+        this.showDialogue('Mateo', 'portrait_mateo', 'Ya resolviste este choque. Ahora entra al aula para hablar con el Profe Ricardo (!).', null);
         return;
       }
       this.startEncounter('colegio_mateo', (isGood) => {
@@ -539,10 +596,52 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
 
-    if (item.id === 'door_finish') {
-      if (!run.mateoResolved) {
+    if (item.id === 'door_patio') {
+      if (!run.mateoResolved || !run.aulaResolved) {
         soundManager.playError();
-        this.showDialogue('Valentic', 'valentic', 'Primero resuelve el encuentro con Mateo (!).', null);
+        this.showDialogue('Valentic', 'valentic', 'Primero resuelve los casos del pasillo y del aula (!).', null);
+        return;
+      }
+      soundManager.playClick();
+      run.mapId = 'patio';
+      this.scene.restart();
+      return;
+    }
+
+    if (item.id === 'sofia_patio') {
+      run.sofiaPatioTalked = true;
+      this.refreshBadges();
+      this.showDialogue('Sofía', 'portrait_sofia', gameState.story.npcs.sofia_patio.greeting, 'npc_sofia_patio');
+      return;
+    }
+
+    if (item.id === 'mateo_patio') {
+      if (run.patioResolved) {
+        this.showDialogue('Mateo', 'portrait_mateo', 'Ya terminaron el partido. ¡Ve a la salida (★)!', null);
+        return;
+      }
+      this.startEncounter('colegio_patio', (isGood) => {
+        run.patioResolved = true;
+        run.patioGood = isGood;
+        if (isGood) run.shadowFollowing = false;
+        this.shadowFollower.setVisible(run.shadowFollowing);
+        this.refreshBadges();
+        this.refreshHud();
+        const out = gameState.story.encounters.colegio_patio.outcome;
+        this.showDialogue(
+          isGood ? 'Mateo' : 'Valentic',
+          isGood ? 'portrait_mateo' : 'valentic',
+          isGood ? out.goodMapLine : out.badMapLine,
+          isGood ? 'colegio_patio_good' : 'colegio_patio_bad'
+        );
+      });
+      return;
+    }
+
+    if (item.id === 'door_finish') {
+      if (!run.patioResolved) {
+        soundManager.playError();
+        this.showDialogue('Valentic', 'valentic', 'Primero resuelve el reto con Mateo en la cancha (!).', null);
         return;
       }
       soundManager.stopVoice();
@@ -582,9 +681,9 @@ export class WorldScene extends Phaser.Scene {
     let progress = 0;
     let holding = false;
 
-    const btnBg = this.add.rectangle(500, 366, 320, 48, 0xdc2626).setStrokeStyle(2, 0xfca5a5);
+    const btnBg = this.add.rectangle(500, 366, 380, 48, 0xdc2626).setStrokeStyle(2, 0xfca5a5);
     btnBg.setInteractive({ useHandCursor: true });
-    const btnTxt = this.add.text(500, 366, '🌬 MANTÉN PARA CALMAR (2.5s)', {
+    const btnTxt = this.add.text(500, 366, '🌬 MANTÉN TECLA ESPACIO (O ESTE BOTÓN)', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '15px',
       fontStyle: 'bold',
@@ -727,7 +826,11 @@ export class WorldScene extends Phaser.Scene {
     } else if (this.mapData.id === 'hogar') {
       target = !run.elenaResolved ? this.npcSprites.elena : this.markers.door_colegio;
     } else if (this.mapData.id === 'colegio') {
-      target = !run.mateoResolved ? this.npcSprites.mateo : this.markers.door_finish;
+      if (!run.mateoResolved) target = this.npcSprites.mateo;
+      else if (!run.aulaResolved) target = this.npcSprites.ricardo;
+      else target = this.markers.door_patio;
+    } else if (this.mapData.id === 'patio') {
+      target = !run.patioResolved ? this.npcSprites.mateo_patio : this.markers.door_finish;
     }
     if (target) {
       this.guideRing.setPosition(target.x, target.y).setVisible(true);
@@ -775,7 +878,7 @@ export class WorldScene extends Phaser.Scene {
       const dx = this.walkTarget.x - this.alex.x;
       const dy = this.walkTarget.y - (this.alex.y - 8);
       const dist = Math.hypot(dx, dy);
-      if (this.walkTarget.target && dist <= 44) {
+      if (this.walkTarget.target && dist <= 52) {
         const tgt = this.walkTarget.target;
         this.walkTarget = null;
         this.destMarker.setVisible(false);
@@ -831,6 +934,10 @@ export class WorldScene extends Phaser.Scene {
 
     this.lastPos.x = this.alex.x;
     this.lastPos.y = this.alex.y;
+
+    if (this.checkAutoDoor()) {
+      return;
+    }
 
     // La Sombra persigue suavemente a Alex si el conflicto del hogar escaló
     if (this.shadowFollower.visible) {

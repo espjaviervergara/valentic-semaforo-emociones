@@ -67,7 +67,7 @@ export class PrologueScene extends Phaser.Scene {
       this.visualGroup.add(this.add.image(505, 184, 'portrait_sombra_hostil').setScale(1));
       this.visualGroup.add(this.add.text(585, 184, '⚡', { fontSize: '30px', color: '#ef4444' }).setOrigin(0.5));
       this.visualGroup.add(this.add.image(665, 184, 'portrait_sombra_calma').setScale(1));
-    } else {
+    } else if (idx === 2) {
       const lights = [
         { x: 430, c: 0xef4444, t: 'ROJO\nRespira' },
         { x: 580, c: 0xf59e0b, t: 'AMARILLO\nPiensa' },
@@ -80,6 +80,29 @@ export class PrologueScene extends Phaser.Scene {
           fontSize: '14px',
           fontStyle: 'bold',
           color: '#f8fafc',
+          align: 'center',
+        }).setOrigin(0.5));
+      });
+    } else {
+      // Diapositiva 4: Controles claros paso a paso
+      const cards = [
+        { x: 400, title: 'CAMINAR', body: 'Flechas / WASD\no toca el piso' },
+        { x: 578, title: 'HABLAR / PUERTAS', body: 'Tecla E, ESPACIO\no botón verde' },
+        { x: 756, title: 'RESPIRAR (ROJO)', body: 'Mantén ESPACIO\no el botón azul' },
+      ];
+      cards.forEach((card) => {
+        this.visualGroup.add(drawPanel(this, card.x - 78, 134, 156, 110, 0x0f172a, 1, 0x38bdf8));
+        this.visualGroup.add(this.add.text(card.x, 156, card.title, {
+          fontFamily: 'Trebuchet MS, sans-serif',
+          fontSize: '13px',
+          fontStyle: 'bold',
+          color: '#fde047',
+        }).setOrigin(0.5));
+        this.visualGroup.add(this.add.text(card.x, 200, card.body, {
+          fontFamily: 'Trebuchet MS, sans-serif',
+          fontSize: '14px',
+          fontStyle: 'bold',
+          color: '#ffffff',
           align: 'center',
         }).setOrigin(0.5));
       });

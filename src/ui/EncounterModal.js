@@ -125,7 +125,7 @@ export class EncounterModal {
     });
 
     this.breathRing = s.add.circle(520, 304, 30, 0x38bdf8, 0.25).setStrokeStyle(3, 0x38bdf8);
-    this.breathLabel = s.add.text(520, 360, 'Mantén el botón azul (o ESPACIO) 3 segundos', {
+    this.breathLabel = s.add.text(520, 360, 'Mantén presionada la tecla ESPACIO (o el botón azul) 3s', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '16px',
       fontStyle: 'bold',
@@ -136,9 +136,9 @@ export class EncounterModal {
     this.breathBar = s.add.rectangle(342, 392, 2, 14, 0x38bdf8).setOrigin(0, 0.5);
     this.container.add([this.breathRing, this.breathLabel, track, this.breathBar]);
 
-    const holdBg = s.add.rectangle(520, 450, 360, 48, 0x0284c7).setStrokeStyle(2.5, 0xbae6fd);
+    const holdBg = s.add.rectangle(520, 450, 400, 48, 0x0284c7).setStrokeStyle(2.5, 0xbae6fd);
     holdBg.setInteractive({ useHandCursor: true });
-    const holdTxt = s.add.text(520, 450, '🌬 MANTÉN PARA RESPIRAR', {
+    const holdTxt = s.add.text(520, 450, '🌬 MANTÉN ESPACIO (O ESTE BOTÓN)', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '17px',
       fontStyle: 'bold',

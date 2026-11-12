@@ -55,11 +55,16 @@ class GameStateManager {
       backpackTaken: skipTutorial,
       mirrorDone: skipTutorial,
       sofiaTalked: false,
+      sofiaPatioTalked: false,
       ricardoTalked: false,
       elenaResolved: false,
       elenaGood: false,
       mateoResolved: false,
       mateoGood: false,
+      aulaResolved: false,
+      aulaGood: false,
+      patioResolved: false,
+      patioGood: false,
       shadowFollowing: false,
     };
   }

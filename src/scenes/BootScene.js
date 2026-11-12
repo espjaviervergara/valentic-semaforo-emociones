@@ -74,14 +74,18 @@ export class BootScene extends Phaser.Scene {
 
     // Voces RPG
     [
-      'pro_1', 'pro_2', 'pro_3',
+      'pro_1', 'pro_2', 'pro_3', 'pro_4',
       'tut_welcome', 'tut_backpack', 'tut_mirror_prompt', 'tut_mirror_done', 'tut_door_hint',
-      'npc_sofia', 'npc_ricardo', 'diary_p1',
+      'npc_sofia', 'npc_sofia_patio', 'npc_ricardo', 'diary_p1',
       'valentic_green_guide', 'valentic_victory',
       'hogar_elena_prov', 'hogar_elena_red_tip', 'hogar_elena_dec_prompt',
       'hogar_elena_shadow', 'hogar_elena_cnv_clean', 'hogar_elena_good', 'hogar_elena_bad',
       'colegio_mateo_prov', 'colegio_mateo_red_tip', 'colegio_mateo_dec_prompt',
       'colegio_mateo_shadow', 'colegio_mateo_cnv_clean', 'colegio_mateo_good', 'colegio_mateo_bad',
+      'colegio_aula_prov', 'colegio_aula_red_tip', 'colegio_aula_dec_prompt',
+      'colegio_aula_shadow', 'colegio_aula_cnv_clean', 'colegio_aula_good', 'colegio_aula_bad',
+      'colegio_patio_prov', 'colegio_patio_red_tip', 'colegio_patio_dec_prompt',
+      'colegio_patio_shadow', 'colegio_patio_cnv_clean', 'colegio_patio_good', 'colegio_patio_bad',
     ].forEach((vk) => {
       this.load.audio(vk, `./assets/audio/voices/${vk}.mp3`);
     });

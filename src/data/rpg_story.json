@@ -18,18 +18,24 @@
       "speaker": "Valentic",
       "text": "Aprenderás a usar mi Semáforo: Rojo para respirar, Amarillo para pensar y Verde para hablar con respeto.",
       "voiceKey": "pro_3"
+    },
+    {
+      "id": "pro_4",
+      "speaker": "Valentic",
+      "text": "Cómo jugar: muévete con las flechas, W A S D o tocando el piso. Para hablar, abrir puertas y respirar usa la tecla ESPACIO, la E o el botón verde.",
+      "voiceKey": "pro_4"
     }
   ],
   "tutorial": {
     "welcome": "Mueve a Alex con las flechas o tocando el piso. Primero recoge tu mochila azul.",
     "backpack": "¡Bien! Llevas tus cuadernos. Ahora acércate al espejo brillante.",
-    "mirrorPrompt": "¡Mira! En el espejo aparece La Sombra. Vamos a practicar la Luz Roja: mantén presionado para respirar.",
-    "mirrorDone": "¡Genial! Ganaste 1 Energía de Calma. Ahora sal por la puerta de madera.",
+    "mirrorPrompt": "¡Mira! En el espejo aparece La Sombra. Mantén presionada la tecla ESPACIO (o el botón rojo) para respirar.",
+    "mirrorDone": "¡Genial! Ganaste 1 Energía de Calma. Ahora camina hacia la puerta de madera para ir al comedor.",
     "doorHint": "Primero recoge tu mochila y practica en el espejo."
   },
   "diary": {
     "title": "Página 1 · Romper el eco",
-    "summary": "Los gritos de alguien cansado no son tu culpa. Si paras, respiras y hablas con calma, evitas llevarte la rabia al colegio.",
+    "summary": "En casa, en el pasillo, en el aula y en la cancha puedes elegir parar antes de gritar o golpear. Hablar con calma cambia cómo te tratan los demás.",
     "tip": "Recuerda el orden: 1. Qué pasó · 2. Cómo me siento · 3. Qué pido con respeto."
   },
   "npcs": {
@@ -39,10 +45,15 @@
       "greeting": "¡Hola Alex! Si alguien te molesta hoy, respira primero. ¡Cuentas conmigo!",
       "rewardMsg": "Sofía te animó (+1 ⚡ Energía de Calma)."
     },
+    "sofia_patio": {
+      "name": "Sofía",
+      "portrait": "portrait_sofia",
+      "greeting": "¡Hola otra vez! En el partido Mateo está muy acelerado. Respira y pon límites con calma."
+    },
     "ricardo": {
       "name": "Profe Ricardo",
       "portrait": "portrait_ricardo",
-      "greeting": "Buenos días, Alex. Recuerda que en orientación siempre tienes un espacio seguro para hablar."
+      "greeting": "Buenos días, Alex. Primero atiende la situación del pasillo y luego revisamos tu taller en clase."
     }
   },
   "encounters": {
@@ -51,7 +62,7 @@
       "characterName": "Elena (Mamá)",
       "portrait": "portrait_elena",
       "provocation": "\"¡Alex! Dejaste los platos sucios y ya voy tarde al trabajo. ¡Nunca ayudas!\"",
-      "redTip": "¡Alto! Apaga las 3 chispas de rabia manteniendo el botón de respirar.",
+      "redTip": "¡Alto! Mantén presionado ESPACIO (o el botón azul) para apagar las 3 chispas.",
       "decoder": {
         "prompt": "¿Por qué crees que mamá gritó así?",
         "options": [
@@ -117,10 +128,10 @@
     },
     "colegio_mateo": {
       "id": "colegio_mateo",
-      "characterName": "Mateo (Compañero)",
+      "characterName": "Mateo (Pasillo)",
       "portrait": "portrait_mateo",
       "provocation": "\"¡Quítate del camino, estorbo! ¿O vas a llorar por tus cuadernos?\"",
-      "redTip": "¡Alto! No empujes. Respira y enfría las chispas antes de responder.",
+      "redTip": "¡Alto! No empujes. Mantén ESPACIO (o el botón azul) para respirar.",
       "decoder": {
         "prompt": "¿Por qué Mateo se burla frente a los demás?",
         "options": [
@@ -180,8 +191,146 @@
         ]
       },
       "outcome": {
-        "goodMapLine": "Mateo se sorprende, recoge un cuaderno y se aleja en calma. ¡Rompiste el eco!",
-        "badMapLine": "El choque en el pasillo dejó mucha tensión. Puedes intentarlo de nuevo para calmar el día."
+        "goodMapLine": "Mateo se sorprende, recoge un cuaderno y se aleja. Ahora ve al aula con el Profe Ricardo (!).",
+        "badMapLine": "El choque en el pasillo dejó tensión. Ahora ve al aula con el Profe Ricardo (!)."
+      }
+    },
+    "colegio_aula": {
+      "id": "colegio_aula",
+      "characterName": "Profe Ricardo (Aula)",
+      "portrait": "portrait_ricardo",
+      "provocation": "\"Alex, estás muy distraído y este taller quedó bajo. ¿Vas a seguir perdiendo el tiempo?\"",
+      "redTip": "¡Alto! No contestes feo. Mantén ESPACIO (o el botón azul) para calmarte.",
+      "decoder": {
+        "prompt": "¿Por qué el Profe Ricardo te habló tan serio en clase?",
+        "options": [
+          {
+            "icon": "📚",
+            "text": "Está preocupado por mi aprendizaje y quiere que reaccione.",
+            "isCorrect": true,
+            "feedback": "¡Así es! No es ataque personal; puedes pedir su ayuda. (+1 ⚡ Energía)"
+          },
+          {
+            "icon": "😤",
+            "text": "Quiere humillarme frente a todo el salón.",
+            "isCorrect": false,
+            "feedback": "Pensar que te odia te pone a la defensiva. (+10% Tensión)"
+          },
+          {
+            "icon": "😴",
+            "text": "Le da pereza enseñar y la coge conmigo.",
+            "isCorrect": false,
+            "feedback": "Echar culpas cierra la oportunidad de mejorar. (+10% Tensión)"
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Contéstale que su clase es aburrida y tira el cuaderno al piso!\"",
+        "options": [
+          {
+            "text": "Puedo explicar con respeto que tuve una mañana pesada y pedir ayuda.",
+            "isCorrect": true,
+            "feedback": "¡Excelente! Cuidaste tu estudio y evitaste un problema."
+          },
+          {
+            "text": "Le respondo con sarcasmo para que el salón se ría.",
+            "isCorrect": false,
+            "feedback": "Contestar feo solo agrava la situación en clase."
+          },
+          {
+            "text": "Rompo la hoja del taller en silencio.",
+            "isCorrect": false,
+            "feedback": "Callar tu frustración no resuelve la duda en clase."
+          }
+        ],
+        "failText": "Alex responde de mala gana y recibe un llamado de atención."
+      },
+      "cnv": {
+        "hecho": [
+          { "text": "Profe, al llamarme la atención frente al salón...", "valid": true },
+          { "text": "Usted siempre me regaña sin saber nada...", "valid": false }
+        ],
+        "sentimiento": [
+          { "text": "...me siento nervioso y bloqueado por problemas que traigo...", "valid": true },
+          { "text": "...me da rabia que me tenga entre ojos...", "valid": false }
+        ],
+        "peticion": [
+          { "text": "...al terminar la clase me explica qué debo reforzar.", "valid": true },
+          { "text": "...déjeme quieto que yo veré qué hago.", "valid": false }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "El Profe asiente amable: \"Claro, Alex. Te ayudaré.\" ¡Ya puedes salir al Patio!",
+        "badMapLine": "La clase terminó tensa. Sal por la puerta arriba para ir al Patio."
+      }
+    },
+    "colegio_patio": {
+      "id": "colegio_patio",
+      "characterName": "Mateo (Cancha escolar)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Por tu culpa vamos perdiendo el partido! ¡Salte de la cancha ya!\"",
+      "redTip": "¡Alto! Mantén ESPACIO (o el botón azul) para bajar el pulso del juego.",
+      "decoder": {
+        "prompt": "¿Qué le pasa a Mateo en medio del partido?",
+        "options": [
+          {
+            "icon": "🏀",
+            "text": "Está frustrado por ir perdiendo y quiere descargar la rabia.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! La presión del juego lo aceleró. (+1 ⚡ Energía)"
+          },
+          {
+            "icon": "😠",
+            "text": "Me odia desde que nací.",
+            "isCorrect": false,
+            "feedback": "Tomarlo personal te invita a pelear. (+10% Tensión)"
+          },
+          {
+            "icon": "💥",
+            "text": "La única forma de jugar es a los gritos.",
+            "isCorrect": false,
+            "feedback": "Gritar rompe el trabajo en equipo. (+10% Tensión)"
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Tírale el balón duro! Demuéstrale quién manda en la cancha.\"",
+        "options": [
+          {
+            "text": "Un pelotazo arruina el juego; puedo pedir respeto sin golpear.",
+            "isCorrect": true,
+            "feedback": "¡Sombra transformada! Elegiste jugar en paz."
+          },
+          {
+            "text": "Le tiro el balón con fuerza para que se calle.",
+            "isCorrect": false,
+            "feedback": "Lanzar el balón inicia una pelea y suspende el partido."
+          },
+          {
+            "text": "Me salgo llorando sin decir nada.",
+            "isCorrect": false,
+            "feedback": "Irte sin hablar deja el conflicto sin solución."
+          }
+        ],
+        "failText": "El partido se detiene por un choque fuerte entre ambos."
+      },
+      "cnv": {
+        "hecho": [
+          { "text": "Mateo, cuando me gritas por fallar un pase...", "valid": true },
+          { "text": "Mateo, tú tampoco metes ni una canasta...", "valid": false }
+        ],
+        "sentimiento": [
+          { "text": "...me desconcentro y me siento maltratado en el equipo...", "valid": true },
+          { "text": "...me provocas ganas de dejarte tirado...", "valid": false }
+        ],
+        "peticion": [
+          { "text": "...juguemos hablándonos bien para poder remontar juntos.", "valid": true },
+          { "text": "...cállate si no quieres líos a la salida.", "valid": false }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo respira y dice: \"Bueno, pásala abierto\". ¡Terminan el partido en paz! Ve a la salida (★).",
+        "badMapLine": "Hubo discusión en la cancha. Ve a la salida (★) para ver tu resumen del día."
       }
     }
   }
