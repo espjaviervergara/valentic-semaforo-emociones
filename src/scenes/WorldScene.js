@@ -353,7 +353,7 @@ export class WorldScene extends Phaser.Scene {
     this.dialogueLayer.add(drawPanel(this, 36, 396, width - 72, 130, 0x0f172a, 0.96, 0x38bdf8));
 
     if (portraitKey === 'valentic') {
-      this.dialogueLayer.add(this.add.image(96, 462, 'valentic').setScale(0.56));
+      this.dialogueLayer.add(this.add.image(96, 462, 'valentic').setScale(0.18));
     } else if (portraitKey) {
       this.dialogueLayer.add(this.add.image(96, 462, portraitKey).setScale(0.95));
     }
@@ -655,7 +655,7 @@ export class WorldScene extends Phaser.Scene {
     c.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.74).setInteractive());
     c.add(drawPanel(this, 130, 100, width - 260, height - 200, 0x0f172a, 0.98, 0x38bdf8));
 
-    c.add(this.add.image(230, 270, 'valentic').setScale(0.95));
+    c.add(this.add.image(230, 270, 'valentic').setScale(0.35));
     c.add(this.add.image(730, 184, 'portrait_sombra_hostil').setScale(1));
 
     c.add(this.add.text(320, 128, 'ESPEJO · PRÁCTICA DE LUZ ROJA', {
@@ -726,7 +726,22 @@ export class WorldScene extends Phaser.Scene {
     this.activeModal = new EncounterModal(this, encId, (isGood) => {
       this.activeModal = null;
       soundManager.playBGM(this.mapData.bgm);
-      onDone(isGood);
+
+      // ¡Recarga de energía con Minijuego de ValenTIC al azar!
+      const minigames = ['flappy', 'popcorn', 'river'];
+      const chosen = Phaser.Utils.Array.GetRandom(minigames);
+
+      this.scene.pause();
+      this.scene.launch('MinigameScene', {
+        mode: 'story',
+        type: chosen,
+        onComplete: () => {
+          this.scene.stop('MinigameScene');
+          this.scene.resume();
+          soundManager.playBGM(this.mapData.bgm);
+          onDone(isGood);
+        },
+      });
     });
   }
 

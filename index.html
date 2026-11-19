@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>ValenTIC y el Semáforo de las Emociones — RPG</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <main class="game-shell">
+    <button id="fullscreen-toggle" class="fullscreen-toggle" title="Pantalla Completa" aria-label="Pantalla Completa">⛶</button>
     <div id="game-container" class="game-container" aria-label="ValenTIC y el Semáforo de las Emociones"></div>
 
     <div id="protocol-warning" class="protocol-warning" hidden>
@@ -18,6 +19,21 @@
   <script>
     if (window.location.protocol === 'file:') {
       document.getElementById('protocol-warning').hidden = false;
+    }
+    const fsBtn = document.getElementById('fullscreen-toggle');
+    if (fsBtn) {
+      fsBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          const docEl = document.documentElement;
+          if (docEl.requestFullscreen) docEl.requestFullscreen();
+          else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+          fsBtn.innerHTML = '⛶';
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen();
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          fsBtn.innerHTML = '⛶';
+        }
+      });
     }
   </script>
   <script src="./lib/phaser.min.js"></script>

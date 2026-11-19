@@ -143,6 +143,46 @@ class SoundManager {
   playTick() { this.tone(760, 0.04, 'triangle', 0.04); }
   playStep() { this.tone(150, 0.03, 'sine', 0.02); }
   playVictory() { [523, 659, 784, 1046].forEach((n, i) => this.tone(n, 0.2, 'triangle', 0.08, i * 0.1)); }
+
+  // Nuevos sonidos para minijuegos
+  playPop() {
+    const ctx = this.ensureCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(780, now + 0.07);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.09);
+  }
+
+  playJump() {
+    const ctx = this.ensureCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(540, now + 0.1);
+    gain.gain.setValueAtTime(0.06, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.13);
+  }
+
+  playGlow() {
+    this.tone(784, 0.1, 'sine', 0.06, 0);
+    this.tone(1046, 0.14, 'sine', 0.06, 0.06);
+  }
 }
 
 export const soundManager = new SoundManager();

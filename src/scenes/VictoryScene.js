@@ -22,7 +22,7 @@ export class VictoryScene extends Phaser.Scene {
     drawPanel(this, 56, 36, width - 112, height - 72, 0x0f172a, 0.98, 0x22c55e);
 
     // Valentic exacto + Alex calmado + Sombra calma
-    this.add.image(170, 290, 'valentic').setScale(1);
+    this.add.image(170, 290, 'valentic').setScale(0.35);
     this.add.image(810, 250, 'portrait_alex_calm').setScale(1);
     this.add.image(810, 362, 'portrait_sombra_calma').setScale(0.95);
 

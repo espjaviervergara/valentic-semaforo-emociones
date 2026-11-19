@@ -34,8 +34,9 @@ export class BootScene extends Phaser.Scene {
     // Tileset crisp 48x48 (3x de 16x16)
     this.load.image('rpg_tileset', './assets/tilesets/rpg_tileset.png');
 
-    // Mascota oficial de Valentic intacta
-    this.load.image('valentic', './assets/sprites/valentic_semaforo.png');
+    // Mascota oficial de Valentic en Alta Definición
+    this.load.image('valentic', './assets/sprites/valentic_hd.png');
+    this.load.image('valentic_hd', './assets/sprites/valentic_hd.png');
 
     // Spritesheets RPG 4 direcciones x 3 frames (48x72 cada frame)
     [
@@ -94,6 +95,14 @@ export class BootScene extends Phaser.Scene {
   create() {
     gameState.story = this.cache.json.get('rpg_story');
     soundManager.attach(this);
+
+    // Activar filtrado lineal para que Valentic HD se vea ultrasuave y sin píxeles cortados
+    if (this.textures.exists('valentic')) {
+      this.textures.get('valentic').setFilter(Phaser.Textures.FilterMode.LINEAR);
+    }
+    if (this.textures.exists('valentic_hd')) {
+      this.textures.get('valentic_hd').setFilter(Phaser.Textures.FilterMode.LINEAR);
+    }
 
     // Registrar animaciones de caminar en 4 direcciones
     const chars = [

@@ -64,7 +64,7 @@ export class EncounterModal {
     }));
 
     // Valentic exacto de campaña invita a frenar en Rojo
-    this.container.add(s.add.image(186, 368, 'valentic').setScale(1));
+    this.container.add(s.add.image(186, 368, 'valentic').setScale(0.35));
     this.container.add(drawPanel(s, 276, 286, 550, 96, 0x172554, 1, 0x38bdf8));
     this.container.add(s.add.text(298, 306, 'Valentic: "¡Cuidado! No respondas con rabia.\nVamos a usar el Semáforo Emocional juntos."', {
       fontFamily: 'Trebuchet MS, sans-serif',
@@ -102,7 +102,7 @@ export class EncounterModal {
     const s = this.scene;
     const { width } = s.scale;
 
-    this.container.add(s.add.image(176, 310, 'valentic').setScale(1));
+    this.container.add(s.add.image(176, 310, 'valentic').setScale(0.35));
     this.container.add(s.add.text(276, 98, '1. LUZ ROJA · ¡ALTO Y ENFRÍA LAS CHISPAS!', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '21px',
@@ -167,7 +167,7 @@ export class EncounterModal {
     const s = this.scene;
     const { width } = s.scale;
 
-    this.container.add(s.add.image(176, 300, 'valentic').setScale(1));
+    this.container.add(s.add.image(176, 300, 'valentic').setScale(0.35));
     this.container.add(s.add.text(276, 98, '2. LUZ AMARILLA · USA TU LUPA DE EMPATÍA', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '20px',
@@ -239,7 +239,7 @@ export class EncounterModal {
 
     this.shadowPortrait = s.add.image(164, 160, 'portrait_sombra_hostil').setScale(1.2);
     this.container.add(this.shadowPortrait);
-    this.container.add(s.add.image(164, 354, 'valentic').setScale(0.88));
+    this.container.add(s.add.image(164, 354, 'valentic').setScale(0.32));
 
     this.container.add(s.add.text(266, 98, '2B. CALMA A LA SOMBRA', {
       fontFamily: 'Trebuchet MS, sans-serif',
