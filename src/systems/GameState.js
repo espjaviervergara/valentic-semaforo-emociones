@@ -1,7 +1,9 @@
-const STORAGE_KEY = 'valentic_semaforo_rpg_v1';
+const STORAGE_KEY = 'valentic_semaforo_rpg_v2';
 
 const DEFAULT_SAVE = {
   diaryUnlocked: false,
+  unlockedDay: 5,
+  diaryPages: [1, 2, 3, 4, 5],
   bestStars: 0,
   settings: {
     muted: false,
@@ -45,15 +47,16 @@ class GameStateManager {
     }
   }
 
-  startNewAdventure(skipTutorial = false) {
+  startNewAdventure(skipTutorial = false, day = 1) {
     this.run = {
-      mapId: skipTutorial ? 'hogar' : 'cuarto',
+      day: day || 1,
+      mapId: skipTutorial ? (day === 1 ? 'hogar' : 'colegio') : 'cuarto',
       calma: 100,
       tension: 0,
       vinculos: 3,
       autocuidado: skipTutorial ? 1 : 0,
-      backpackTaken: skipTutorial,
-      mirrorDone: skipTutorial,
+      backpackTaken: skipTutorial || day > 1,
+      mirrorDone: skipTutorial || day > 1,
       sofiaTalked: false,
       sofiaPatioTalked: false,
       ricardoTalked: false,
@@ -103,8 +106,12 @@ class GameStateManager {
     this.run.tension = clamp(this.run.tension + delta, 0, 100);
   }
 
-  unlockDiary(stars) {
+  unlockDiary(day, stars) {
     this.save.diaryUnlocked = true;
+    if (!this.save.diaryPages.includes(day)) {
+      this.save.diaryPages.push(day);
+    }
+    this.save.unlockedDay = Math.max(this.save.unlockedDay, Math.min(5, day + 1));
     this.save.bestStars = Math.max(this.save.bestStars, stars);
     this.persist();
   }

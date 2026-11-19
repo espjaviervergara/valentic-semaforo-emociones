@@ -4,7 +4,7 @@ import { soundManager } from '../systems/SoundManager.js';
 import { EncounterModal } from '../ui/EncounterModal.js';
 import { createButton, drawPanel } from '../ui/UIHelpers.js';
 
-const MAP_OFFSET_Y = 12;
+const MAP_OFFSET_Y = 36;
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -198,40 +198,54 @@ export class WorldScene extends Phaser.Scene {
   buildTopHud() {
     const { width } = this.scale;
     const bar = this.add.container(0, 0).setDepth(35);
-    bar.add(drawPanel(this, 8, 4, width - 16, 46, 0x0f172a, 0.94, 0x38bdf8));
 
-    this.calmaText = this.add.text(22, 16, 'Calma: 100%', {
+    // Barra translúcida delgada de 30px que nunca tapa el juego ni a los personajes
+    const bg = this.add.graphics();
+    bg.fillStyle(0x0f172a, 0.75);
+    bg.fillRoundedRect(8, 2, width - 16, 30, 6);
+    bg.lineStyle(1.5, 0x38bdf8, 0.8);
+    bg.strokeRoundedRect(8, 2, width - 16, 30, 6);
+    bar.add(bg);
+
+    this.dayBadge = this.add.text(18, 9, 'Día 1', {
       fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '14px',
+      fontSize: '12.5px',
+      fontStyle: 'bold',
+      color: '#38bdf8',
+    });
+
+    this.calmaText = this.add.text(68, 9, 'Calma: 100%', {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '12px',
       fontStyle: 'bold',
       color: '#86efac',
     });
-    const calmaTrack = this.add.rectangle(116, 25, 110, 12, 0x1e293b).setOrigin(0, 0.5).setStrokeStyle(1, 0x64748b);
-    this.calmaBar = this.add.rectangle(117, 25, 108, 10, 0x22c55e).setOrigin(0, 0.5);
+    const calmaTrack = this.add.rectangle(154, 17, 64, 8, 0x1e293b).setOrigin(0, 0.5).setStrokeStyle(1, 0x64748b);
+    this.calmaBar = this.add.rectangle(155, 17, 62, 6, 0x22c55e).setOrigin(0, 0.5);
 
-    this.energyText = this.add.text(244, 16, '⚡ 0', {
+    this.energyText = this.add.text(228, 9, '⚡ 0', {
       fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '15px',
+      fontSize: '12.5px',
       fontStyle: 'bold',
       color: '#fde047',
     });
 
-    this.objectiveText = this.add.text(318, 16, 'Objetivo: ...', {
+    this.objectiveText = this.add.text(width / 2 + 30, 9, 'Objetivo: ...', {
       fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '14.5px',
+      fontSize: '12px',
       fontStyle: 'bold',
-      color: '#bae6fd',
-    });
+      color: '#ffffff',
+    }).setOrigin(0.5, 0);
 
-    const pauseBtn = createButton(this, width - 78, 27, 116, 32, '⚙ Pausa', {
+    const pauseBtn = createButton(this, width - 48, 17, 68, 22, '⚙ Pausa', {
       fill: 0x334155,
       hover: 0x475569,
       border: 0x94a3b8,
-      fontSize: '13px',
+      fontSize: '11px',
       onClick: () => this.openPauseMenu(),
     });
 
-    bar.add([this.calmaText, calmaTrack, this.calmaBar, this.energyText, this.objectiveText, pauseBtn]);
+    bar.add([this.dayBadge, this.calmaText, calmaTrack, this.calmaBar, this.energyText, this.objectiveText, pauseBtn]);
   }
 
   buildTouchControls() {
@@ -454,6 +468,103 @@ export class WorldScene extends Phaser.Scene {
     this.walkTarget = null;
     this.destMarker.setVisible(false);
 
+    // Rutas específicas para los Días 2 a 5
+    if (run.day === 2) {
+      if (item.id === 'elena') {
+        this.showDialogue('Elena (Mamá)', 'portrait_elena', '¡Buenos días, Alex! Que te vaya excelente hoy en el colegio presentando tu proyecto de ciencias con Mateo y Sofía.', null);
+        return;
+      }
+      if (item.id === 'mateo') {
+        if (run.mateoResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Menos mal logramos arreglar la maqueta con pegamento! Ve al patio y luego a la salida.', null);
+          return;
+        }
+        this.startEncounter('dia2_ciencia', (isGood) => {
+          run.mateoResolved = true;
+          run.mateoGood = isGood;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.dia2_ciencia.outcome;
+          this.showDialogue(
+            isGood ? 'Mateo' : 'Valentic',
+            isGood ? 'portrait_mateo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
+        return;
+      }
+    }
+
+    if (run.day === 3) {
+      if (item.id === 'mateo') {
+        if (run.mateoResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', 'Me alegra que hayamos hablado con la verdad sobre ese chisme. ¡Ve a la salida del patio!', null);
+          return;
+        }
+        this.startEncounter('dia3_cafeteria', (isGood) => {
+          run.mateoResolved = true;
+          run.mateoGood = isGood;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.dia3_cafeteria.outcome;
+          this.showDialogue(
+            isGood ? 'Mateo' : 'Valentic',
+            isGood ? 'portrait_mateo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
+        return;
+      }
+    }
+
+    if (run.day === 4) {
+      if (item.id === 'ricardo') {
+        if (run.aulaResolved) {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Felicitaciones por superar ese bloqueo con calma, Alex! Ya puedes salir al patio para terminar.', null);
+          return;
+        }
+        this.startEncounter('dia4_examen', (isGood) => {
+          run.aulaResolved = true;
+          run.aulaGood = isGood;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.dia4_examen.outcome;
+          this.showDialogue(
+            isGood ? 'Profe Ricardo' : 'Valentic',
+            isGood ? 'portrait_ricardo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
+        return;
+      }
+    }
+
+    if (run.day === 5) {
+      if (item.id === 'mateo_patio') {
+        if (run.patioResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Eres un verdadero mediador, Alex! Ve a la salida para la ceremonia de graduación (★).', null);
+          return;
+        }
+        this.startEncounter('dia5_festival', (isGood) => {
+          run.patioResolved = true;
+          run.patioGood = isGood;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.dia5_festival.outcome;
+          this.showDialogue(
+            isGood ? 'Mateo' : 'Valentic',
+            isGood ? 'portrait_mateo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
+        return;
+      }
+    }
+
     if (item.id === 'backpack') {
       if (run.backpackTaken) {
         this.showDialogue('Valentic', 'valentic', 'Ya llevas tu mochila lista. ¡Ahora ve al espejo!', null);
@@ -639,13 +750,22 @@ export class WorldScene extends Phaser.Scene {
     }
 
     if (item.id === 'door_finish') {
-      if (!run.patioResolved) {
+      const day = run.day || 1;
+      let canFinish = false;
+      if (day === 1) canFinish = run.patioResolved;
+      else if (day === 2) canFinish = run.mateoResolved;
+      else if (day === 3) canFinish = run.mateoResolved;
+      else if (day === 4) canFinish = run.aulaResolved;
+      else if (day === 5) canFinish = run.patioResolved;
+
+      if (!canFinish) {
         soundManager.playError();
-        this.showDialogue('Valentic', 'valentic', 'Primero resuelve el reto con Mateo en la cancha (!).', null);
+        this.showDialogue('Valentic', 'valentic', 'Primero resuelve el reto emocional de este día (!).', null);
         return;
       }
       soundManager.stopVoice();
       this.scene.start('VictoryScene');
+      return;
     }
   }
 
@@ -728,7 +848,7 @@ export class WorldScene extends Phaser.Scene {
       soundManager.playBGM(this.mapData.bgm);
 
       // ¡Recarga de energía con Minijuego de ValenTIC al azar!
-      const minigames = ['flappy', 'popcorn', 'river'];
+      const minigames = ['flappy', 'popcorn', 'river', 'mario', 'subway'];
       const chosen = Phaser.Utils.Array.GetRandom(minigames);
 
       this.scene.pause();

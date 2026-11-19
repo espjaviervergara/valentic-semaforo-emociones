@@ -109,16 +109,34 @@
       },
       "cnv": {
         "hecho": [
-          { "text": "Mamá, cuando me gritas en la mañana...", "valid": true },
-          { "text": "Tú siempre estás brava conmigo...", "valid": false }
+          {
+            "text": "Mamá, cuando me gritas en la mañana...",
+            "valid": true
+          },
+          {
+            "text": "Tú siempre estás brava conmigo...",
+            "valid": false
+          }
         ],
         "sentimiento": [
-          { "text": "...me asusto y me pongo triste...", "valid": true },
-          { "text": "...me da igual lo que digas...", "valid": false }
+          {
+            "text": "...me asusto y me pongo triste...",
+            "valid": true
+          },
+          {
+            "text": "...me da igual lo que digas...",
+            "valid": false
+          }
         ],
         "peticion": [
-          { "text": "...háblame con calma y en la tarde lavo los platos.", "valid": true },
-          { "text": "...lávalos tú sola si tienes prisa.", "valid": false }
+          {
+            "text": "...háblame con calma y en la tarde lavo los platos.",
+            "valid": true
+          },
+          {
+            "text": "...lávalos tú sola si tienes prisa.",
+            "valid": false
+          }
         ]
       },
       "outcome": {
@@ -178,16 +196,34 @@
       },
       "cnv": {
         "hecho": [
-          { "text": "Mateo, al tirar mis cuadernos y burlarte...", "valid": true },
-          { "text": "Como eres un grosero buscapeleas...", "valid": false }
+          {
+            "text": "Mateo, al tirar mis cuadernos y burlarte...",
+            "valid": true
+          },
+          {
+            "text": "Como eres un grosero buscapeleas...",
+            "valid": false
+          }
         ],
         "sentimiento": [
-          { "text": "...me molesta y me parece injusto...", "valid": true },
-          { "text": "...me dan ganas de golpearte...", "valid": false }
+          {
+            "text": "...me molesta y me parece injusto...",
+            "valid": true
+          },
+          {
+            "text": "...me dan ganas de golpearte...",
+            "valid": false
+          }
         ],
         "peticion": [
-          { "text": "...ayúdame a recogerlos y hablemos con respeto.", "valid": true },
-          { "text": "...lárgate si no quieres problemas.", "valid": false }
+          {
+            "text": "...ayúdame a recogerlos y hablemos con respeto.",
+            "valid": true
+          },
+          {
+            "text": "...lárgate si no quieres problemas.",
+            "valid": false
+          }
         ]
       },
       "outcome": {
@@ -247,16 +283,34 @@
       },
       "cnv": {
         "hecho": [
-          { "text": "Profe, al llamarme la atención frente al salón...", "valid": true },
-          { "text": "Usted siempre me regaña sin saber nada...", "valid": false }
+          {
+            "text": "Profe, al llamarme la atención frente al salón...",
+            "valid": true
+          },
+          {
+            "text": "Usted siempre me regaña sin saber nada...",
+            "valid": false
+          }
         ],
         "sentimiento": [
-          { "text": "...me siento nervioso y bloqueado por problemas que traigo...", "valid": true },
-          { "text": "...me da rabia que me tenga entre ojos...", "valid": false }
+          {
+            "text": "...me siento nervioso y bloqueado por problemas que traigo...",
+            "valid": true
+          },
+          {
+            "text": "...me da rabia que me tenga entre ojos...",
+            "valid": false
+          }
         ],
         "peticion": [
-          { "text": "...al terminar la clase me explica qué debo reforzar.", "valid": true },
-          { "text": "...déjeme quieto que yo veré qué hago.", "valid": false }
+          {
+            "text": "...al terminar la clase me explica qué debo reforzar.",
+            "valid": true
+          },
+          {
+            "text": "...déjeme quieto que yo veré qué hago.",
+            "valid": false
+          }
         ]
       },
       "outcome": {
@@ -316,22 +370,420 @@
       },
       "cnv": {
         "hecho": [
-          { "text": "Mateo, cuando me gritas por fallar un pase...", "valid": true },
-          { "text": "Mateo, tú tampoco metes ni una canasta...", "valid": false }
+          {
+            "text": "Mateo, cuando me gritas por fallar un pase...",
+            "valid": true
+          },
+          {
+            "text": "Mateo, tú tampoco metes ni una canasta...",
+            "valid": false
+          }
         ],
         "sentimiento": [
-          { "text": "...me desconcentro y me siento maltratado en el equipo...", "valid": true },
-          { "text": "...me provocas ganas de dejarte tirado...", "valid": false }
+          {
+            "text": "...me desconcentro y me siento maltratado en el equipo...",
+            "valid": true
+          },
+          {
+            "text": "...me provocas ganas de dejarte tirado...",
+            "valid": false
+          }
         ],
         "peticion": [
-          { "text": "...juguemos hablándonos bien para poder remontar juntos.", "valid": true },
-          { "text": "...cállate si no quieres líos a la salida.", "valid": false }
+          {
+            "text": "...juguemos hablándonos bien para poder remontar juntos.",
+            "valid": true
+          },
+          {
+            "text": "...cállate si no quieres líos a la salida.",
+            "valid": false
+          }
         ]
       },
       "outcome": {
         "goodMapLine": "Mateo respira y dice: \"Bueno, pásala abierto\". ¡Terminan el partido en paz! Ve a la salida (★).",
         "badMapLine": "Hubo discusión en la cancha. Ve a la salida (★) para ver tu resumen del día."
       }
+    },
+    "dia2_ciencia": {
+      "id": "dia2_ciencia",
+      "characterName": "Mateo (Proyecto de Ciencias)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Uy no! Me tropecé con el cable y la maqueta del volcán se hizo pedazos... ¡Qué desastre!\"",
+      "redTip": "¡Alto! No insultes a Mateo. Mantén ESPACIO para apagar las 3 chispas de frustración.",
+      "decoder": {
+        "prompt": "¿Por qué ocurrió el desastre de la maqueta?",
+        "options": [
+          {
+            "icon": "⚡",
+            "text": "Fue un tropiezo accidental, Mateo está asustado y apenado.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! Distinguir un accidente evita una pelea injusta."
+          },
+          {
+            "icon": "😈",
+            "text": "Lo hizo a propósito porque nos tiene envidia.",
+            "isCorrect": false,
+            "feedback": "Pensar en mala fe solo despierta tus ganas de atacar."
+          },
+          {
+            "icon": "💢",
+            "text": "Mateo es un inútil y no merece estar en el equipo.",
+            "isCorrect": false,
+            "feedback": "Los insultos no reconstruyen la maqueta."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Grítale frente a todos y patéale su mochila para desquitarte!\"",
+        "options": [
+          {
+            "text": "La rabia es normal, pero si nos calmamos aún tenemos tiempo de pegarla juntos.",
+            "isCorrect": true,
+            "feedback": "¡Excelente! Elegiste la reparación en vez del rencor."
+          },
+          {
+            "text": "Le tiro las piezas rotas en la cara.",
+            "isCorrect": false,
+            "feedback": "La violencia física arruina el proyecto y te traerá sanción."
+          },
+          {
+            "text": "Me voy del salón y dejo que el grupo saque cero.",
+            "isCorrect": false,
+            "feedback": "Rendirte perjudica tu propia nota escolar."
+          }
+        ],
+        "failText": "Alex estalla en gritos contra Mateo y la clase se interrumpe."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Mateo, cuando la maqueta se cayó por el tropiezo...",
+            "valid": true
+          },
+          {
+            "text": "Mateo, siempre eres un torpe que daña todo...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...me dio mucha angustia y rabia porque nos costó días armarla...",
+            "valid": true
+          },
+          {
+            "text": "...me das ganas de darte una paliza...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...ayúdanos a reconstruir la base con silicona antes de que califique el profe.",
+            "valid": true
+          },
+          {
+            "text": "...págamela ya mismo si no quieres problemas.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo saca pegamento aliviado: \"¡De una, Alex! Gracias por no gritarme, la arreglamos ya\".",
+        "badMapLine": "El proyecto quedó dañado por la discusión. Ve a la salida para reflexionar."
+      }
+    },
+    "dia3_cafeteria": {
+      "id": "dia3_cafeteria",
+      "characterName": "Compañeros (Comedor escolar)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Aquí no hay puesto para ti! Andan diciendo que tú hablaste mal de nosotros a nuestras espaldas.\"",
+      "redTip": "¡Alto! La humillación duele. Mantén presionado ESPACIO para enfriar el impulso de responder con gritos.",
+      "decoder": {
+        "prompt": "¿Por qué reaccionan así en la mesa?",
+        "options": [
+          {
+            "icon": "🗣️",
+            "text": "Alguien inventó un rumor por chisme y ellos creyeron sin comprobar.",
+            "isCorrect": true,
+            "feedback": "¡Muy bien! Los rumores se vencen con serenidad y preguntas directas."
+          },
+          {
+            "icon": "😡",
+            "text": "Todos en el colegio son unos hipócritas que me desprecian.",
+            "isCorrect": false,
+            "feedback": "Generalizar te hace sentir aislado y hostil."
+          },
+          {
+            "icon": "🥪",
+            "text": "Quieren quedarse con mi postre a la fuerza.",
+            "isCorrect": false,
+            "feedback": "El conflicto es por un rumor, no por la comida."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Tírales la bandeja de comida encima y diles que se arrepentirán!\"",
+        "options": [
+          {
+            "text": "Tirar la comida me hace ver culpable. Mejor hablo con la verdad cara a cara.",
+            "isCorrect": true,
+            "feedback": "¡Gran madurez! Desarmaste el chisme sin pelear."
+          },
+          {
+            "text": "Insulto a todos y me siento en otra mesa furioso.",
+            "isCorrect": false,
+            "feedback": "Aislarte bravo deja el rumor creciendo sin aclarar."
+          },
+          {
+            "text": "Me pongo a inventar otro rumor de ellos para vengarme.",
+            "isCorrect": false,
+            "feedback": "Devolver chismes crea una guerra sin fin."
+          }
+        ],
+        "failText": "Alex tira la bandeja y termina en la oficina de rectoría."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Muchachos, cuando me dicen que no puedo sentarme por ese rumor...",
+            "valid": true
+          },
+          {
+            "text": "Ustedes son unos falsos que se creen mejores que yo...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...me duele y me da impotencia que duden de mi lealtad...",
+            "valid": true
+          },
+          {
+            "text": "...me dan asco todos ustedes...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...escuchemos quién inventó eso y aclaremos los hechos de frente.",
+            "valid": true
+          },
+          {
+            "text": "...ahora mismo me piden perdón de rodillas.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo y el grupo se miran: \"Tienes razón, Alex, no debimos creer el rumor sin preguntarte. Siéntate\".",
+        "badMapLine": "La comida terminó en un malentendido amargo. Ve a la salida para continuar."
+      }
+    },
+    "dia4_examen": {
+      "id": "dia4_examen",
+      "characterName": "La Sombra de la Ansiedad (Aula de Examen)",
+      "portrait": "portrait_sombra_hostil",
+      "provocation": "\"¡La mente en blanco! Vas a sacar cero en el examen. ¡Eres un incompetente!\"",
+      "redTip": "¡Alto! El miedo paraliza. Usa la respiración 4-7-8 con Valentic para bajar la taquicardia.",
+      "decoder": {
+        "prompt": "¿Qué es realmente este bloqueo?",
+        "options": [
+          {
+            "icon": "🧠",
+            "text": "Una reacción de alarma del cerebro; si respiro lento, volveré a recordar.",
+            "isCorrect": true,
+            "feedback": "¡Correcto! La ansiedad no significa que no sepas, solo que estás agitado."
+          },
+          {
+            "icon": "🚫",
+            "text": "Una prueba de que soy tonto y nunca aprenderé.",
+            "isCorrect": false,
+            "feedback": "Tratarte mal a ti mismo empeora el bloqueo."
+          },
+          {
+            "icon": "🏃",
+            "text": "Una señal mágica para pararme e irme del colegio.",
+            "isCorrect": false,
+            "feedback": "Huir del examen te quita la oportunidad de superarlo."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Rompe la hoja del examen y di que el profesor es un tirano!\"",
+        "options": [
+          {
+            "text": "Puedo tomar un sorbo de agua, respirar en 4-7-8 y empezar por la pregunta más fácil.",
+            "isCorrect": true,
+            "feedback": "¡La Sombra se calma y se vuelve luminosa! Tu mente recuperó la claridad."
+          },
+          {
+            "text": "Me pongo a llorar en el pupitre tapándome la cara.",
+            "isCorrect": false,
+            "feedback": "Llorar desahoga, pero no resuelve tu examen; pide apoyo."
+          },
+          {
+            "text": "Intento copiarme del compañero de al lado.",
+            "isCorrect": false,
+            "feedback": "Copiarte genera más culpa y te arriesga a sanción."
+          }
+        ],
+        "failText": "Alex entrega la hoja en blanco con lágrimas en los ojos."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Profe Ricardo, cuando vi las primeras preguntas me bloqueé por los nervios...",
+            "valid": true
+          },
+          {
+            "text": "Profe, su examen es imposible y está hecho para rajarnos...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...sentí mucha angustia y temor de defraudar a todos...",
+            "valid": true
+          },
+          {
+            "text": "...me dio rabia que ponga preguntas tramposas...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...¿puedo tomar un sorbo de agua y empezar por los ejercicios prácticos?",
+            "valid": true
+          },
+          {
+            "text": "...anule el examen o no le vuelvo a hacer caso.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "El Profe sonríe: \"Claro Alex, respira hondo. Eres muy inteligente, confía en ti\". ¡Examen aprobado!",
+        "badMapLine": "El examen fue difícil, pero aprendiste sobre tu respiración. Sal al patio."
+      }
+    },
+    "dia5_festival": {
+      "id": "dia5_festival",
+      "characterName": "Festival Escolar (Gran Clímax)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Hubo trampa en las votaciones del festival! ¡Vamos a pelear por ese trofeo ahora mismo!\"",
+      "redTip": "¡Alto! Toda la escuela está mirando. Mantén presionado ESPACIO para irradiar calma.",
+      "decoder": {
+        "prompt": "¿Qué necesita el colegio en este momento de tensión colectiva?",
+        "options": [
+          {
+            "icon": "🤝",
+            "text": "Un mediador que escuche a ambas partes y proponga revisar las actas con calma.",
+            "isCorrect": true,
+            "feedback": "¡Eres un líder! La convivencia pacífica se construye con mediación."
+          },
+          {
+            "icon": "👊",
+            "text": "Que gane el que pegue el puño más fuerte.",
+            "isCorrect": false,
+            "feedback": "La fuerza bruta destruye el festival escolar."
+          },
+          {
+            "icon": "🍿",
+            "text": "Grabar con el celular para subir la pelea a redes sociales.",
+            "isCorrect": false,
+            "feedback": "Grabar peleas alimenta el morbo y daña a las personas."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡No te metas, deja que se golpeen o la masa se irá contra ti!\"",
+        "options": [
+          {
+            "text": "ValenTIC y yo tenemos las herramientas del Semáforo. Podemos mediar con respeto.",
+            "isCorrect": true,
+            "feedback": "¡LA SOMBRA SE ILUMINA TOTALMENTE! Se ha convertido en tu gran protectora."
+          },
+          {
+            "text": "Grito insultando a los dos bandos para que se separen.",
+            "isCorrect": false,
+            "feedback": "Gritar insultos solo echa leña al fuego."
+          },
+          {
+            "text": "Salgo corriendo y me escondo detrás de las gradas.",
+            "isCorrect": false,
+            "feedback": "Huir deja a tus amigos en peligro de lastimarse."
+          }
+        ],
+        "failText": "La pelea estalla y el festival queda clausurado por las directivas."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Amigos, cuando nos dejamos cegar por un resultado dudoso...",
+            "valid": true
+          },
+          {
+            "text": "¡Son todos una partida de salvajes que no saben perder!...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...sentimos furia e impotencia, pero destruirnos no resuelve nada...",
+            "valid": true
+          },
+          {
+            "text": "...dan vergüenza ajena con su espectáculo...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...convoquemos a los jurados y revisemos los votos juntos con transparencia.",
+            "valid": true
+          },
+          {
+            "text": "...denme el trofeo a mí y dejen de molestar.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "¡Todos aplauden y bajan los brazos! Profe Ricardo y la rectora entregan la Medalla de la Convivencia a Alex y Valentic.",
+        "badMapLine": "Hubo momentos difíciles, pero lograste culminar la semana con valiosas lecciones. ¡Ve a la salida!"
+      }
     }
-  }
+  },
+  "diary_pages": [
+    {
+      "day": 1,
+      "title": "Página 1 · Romper el eco de la hostilidad",
+      "summary": "En casa y en el colegio puedes elegir parar antes de gritar. Hablar con calma cambia la respuesta de los demás.",
+      "tip": "Fórmula mágica: 1. Qué pasó (hechos) · 2. Cómo me siento (emoción) · 3. Qué pido con respeto (petición clara)."
+    },
+    {
+      "day": 2,
+      "title": "Página 2 · Trabajo en equipo y reparación",
+      "summary": "Cuando alguien comete un error o rompe algo en un proyecto, culparlo con rabia solo empeora todo. Reparar juntos une más al grupo.",
+      "tip": "Pregúntate: ¿Fue a propósito o un accidente? Busca soluciones en vez de culpables."
+    },
+    {
+      "day": 3,
+      "title": "Página 3 · Desarmar los rumores con hechos",
+      "summary": "Los chismes nacen de la inseguridad. Antes de creer o sumarte a la exclusión de un compañero, habla de frente y verifica la verdad.",
+      "tip": "No juzgues a nadie de oídas. La empatía desarma la mentira."
+    },
+    {
+      "day": 4,
+      "title": "Página 4 · La mente en calma y la respiración 4-7-8",
+      "summary": "El miedo a los exámenes nubla la memoria. Tu valor no depende de una nota. Respirar lento le dice a tu cerebro que estás a salvo.",
+      "tip": "Técnica 4-7-8: Inhala en 4 segundos, sostén en 7, y exhala en 8. Tu mente volverá a enfocarse."
+    },
+    {
+      "day": 5,
+      "title": "Página 5 · ¡Graduación: Guardianes de la Convivencia!",
+      "summary": "La Sombra ya no es un enemigo que te empuja a pelear, sino una aliada que te avisa cuándo necesitas cuidarte y mediar por tus amigos.",
+      "tip": "¡Felicidades! Eres un Guardián Emocional en tu colegio y en tu hogar."
+    }
+  ]
 }

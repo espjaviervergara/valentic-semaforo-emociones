@@ -14,7 +14,9 @@ export class MenuScene extends Phaser.Scene {
     soundManager.playBGM('bgm_menu');
     this.input.once('pointerdown', () => soundManager.playBGM('bgm_menu'));
 
-    // Fondo Pixel Art RPG nítido construido con tiles 48x48
+    this.selectedDifficulty = 'challenge'; // 'challenge' o 'zen'
+
+    // Fondo Pixel Art RPG nítido
     const map = this.make.tilemap({
       data: [
         [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -33,18 +35,18 @@ export class MenuScene extends Phaser.Scene {
       tileHeight: 48,
     });
     const tiles = map.addTilesetImage('rpg_tileset', 'rpg_tileset', 48, 48);
-    const bgLayer = map.createBlankLayer('floor', tiles, 0, 12);
+    const bgLayer = map.createBlankLayer('floor', tiles, 0, 36);
     bgLayer.fill(0, 0, 0, 10, 11);
     bgLayer.fill(2, 10, 0, 10, 11);
-    map.createLayer(0, tiles, 0, 12);
+    map.createLayer(0, tiles, 0, 36);
 
     this.add.rectangle(width / 2, height / 2, width, height, 0x090f1d, 0.48);
 
-    // Personajes RPG animados en el escenario de bienvenida
-    const alex = this.add.sprite(750, 390, 'rpg_alex').play('rpg_alex_walk_right');
+    // Personajes RPG animados
+    const alex = this.add.sprite(760, 390, 'rpg_alex').play('rpg_alex_walk_right');
     this.tweens.add({
       targets: alex,
-      x: 850,
+      x: 860,
       duration: 2400,
       yoyo: true,
       repeat: -1,
@@ -53,20 +55,20 @@ export class MenuScene extends Phaser.Scene {
     });
     this.add.sprite(880, 390, 'rpg_sombra_hostil').play('rpg_sombra_hostil_idle_left');
 
-    // Valentic oficial en Alta Definición con animación suave de flotación
-    const vGlow = this.add.circle(158, 335, 75, 0x38bdf8, 0.22);
-    const valentic = this.add.image(158, 335, 'valentic').setScale(0.36);
+    // Valentic oficial en Alta Definición con halo y flotación
+    const vGlow = this.add.circle(150, 330, 75, 0x38bdf8, 0.22);
+    const valentic = this.add.image(150, 330, 'valentic').setScale(0.36);
     this.tweens.add({
       targets: [valentic, vGlow],
-      y: 320,
+      y: 315,
       duration: 1800,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',
     });
 
-    drawPanel(this, 58, 436, 200, 42, 0x0f172a, 0.94, 0x38bdf8);
-    this.add.text(158, 457, '¡Tu guía emocional!', {
+    drawPanel(this, 50, 432, 200, 42, 0x0f172a, 0.94, 0x38bdf8);
+    this.add.text(150, 453, '¡Tu guía emocional!', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '14px',
       fontStyle: 'bold',
@@ -74,271 +76,271 @@ export class MenuScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Título principal
-    drawPanel(this, 230, 24, 500, 94, 0x0f172a, 0.94, 0x38bdf8);
-    this.add.text(width / 2, 54, 'VALENTIC', {
+    drawPanel(this, 230, 20, 500, 90, 0x0f172a, 0.94, 0x38bdf8);
+    this.add.text(width / 2, 48, 'VALENTIC', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '32px',
       fontStyle: 'bold',
       color: '#ffffff',
     }).setOrigin(0.5);
-    this.add.text(width / 2, 90, 'y el Semáforo de las Emociones', {
+    this.add.text(width / 2, 82, 'y el Semáforo de las Emociones', {
       fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '18px',
+      fontSize: '17px',
       fontStyle: 'bold',
       color: '#fbbf24',
     }).setOrigin(0.5);
 
-    // Botones de acción principales
-    createButton(this, width / 2, 160, 340, 52, '▶ Jugar Aventura\n(Historia + Tutorial paso a paso)', {
+    // Botones Principales
+    createButton(this, width / 2, 150, 340, 48, '▶ Iniciar Aventura (Historia Completa)', {
       fill: 0x16a34a,
       hover: 0x22c55e,
       border: 0x86efac,
-      fontSize: '15.5px',
+      fontSize: '15px',
       onClick: () => {
-        gameState.startNewAdventure(false);
+        gameState.startNewAdventure(false, 1);
         this.scene.start('PrologueScene');
       },
     });
 
-    createButton(this, width / 2, 226, 340, 44, '🎮 Zona de Minijuegos de ValenTIC', {
+    createButton(this, width / 2, 206, 340, 44, '🎮 Zona de Minijuegos (5 Juegos)', {
       fill: 0x7c3aed,
       hover: 0x8b5cf6,
       border: 0xc4b5fd,
-      fontSize: '15.5px',
+      fontSize: '15px',
       onClick: () => this.openMinigamesSelector(),
     });
 
-    createButton(this, width / 2, 282, 340, 44, '🎬 Ver Video de ValenTIC (Emociones)', {
-      fill: 0x0284c7,
-      hover: 0x0369a1,
-      border: 0x7dd3fc,
-      fontSize: '15px',
-      onClick: () => this.openVideoPrompt(),
-    });
-
-    createButton(this, width / 2, 338, 340, 44, `📖 Mi Diario ${gameState.save.diaryUnlocked ? '(Desbloqueado ✓)' : '(1 página)'}`, {
-      fill: 0x4f46e5,
-      hover: 0x6366f1,
-      border: 0xc7d2fe,
-      fontSize: '15px',
-      onClick: () => this.openDiaryModal(),
-    });
-
-    // Fila inferior de utilidades
-    createButton(this, width / 2 - 95, 396, 175, 38, '▶ Ir a Día 1', {
+    createButton(this, width / 2, 260, 340, 42, '📅 Seleccionar Día de la Semana (1 al 5)', {
       fill: 0x2563eb,
       hover: 0x3b82f6,
       border: 0x93c5fd,
-      fontSize: '14px',
+      fontSize: '14.5px',
+      onClick: () => this.openDaySelector(),
+    });
+
+    createButton(this, width / 2, 312, 340, 42, '📖 Mi Diario de Convivencia (5 Páginas)', {
+      fill: 0x4f46e5,
+      hover: 0x6366f1,
+      border: 0xc7d2fe,
+      fontSize: '14.5px',
+      onClick: () => this.openDiaryModal(1),
+    });
+
+    createButton(this, width / 2, 364, 340, 42, '🎬 Ver Video de ValenTIC (Emociones)', {
+      fill: 0x0284c7,
+      hover: 0x0369a1,
+      border: 0x7dd3fc,
+      fontSize: '14.5px',
       onClick: () => {
-        gameState.startNewAdventure(true);
-        this.scene.start('WorldScene');
+        window.open('https://www.facebook.com/reel/3205881169617381', '_blank');
       },
     });
 
-    createButton(this, width / 2 + 95, 396, 175, 38, '⚙ Opciones', {
+    createButton(this, width / 2, 416, 200, 36, '⚙ Opciones de Audio', {
       fill: 0x334155,
       hover: 0x475569,
       border: 0x94a3b8,
-      fontSize: '14px',
+      fontSize: '13.5px',
       onClick: () => this.openSettingsModal(),
     });
 
-    this.add.text(width / 2, 506, 'I.E. Ángela María Torres Suárez · RPG Educativo con ValenTIC', {
+    this.add.text(width / 2, 498, 'I.E. Ángela María Torres Suárez · RPG Educativo con ValenTIC', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '13px',
       color: '#cbd5e1',
     }).setOrigin(0.5);
   }
 
-  openMinigamesSelector() {
+  openDaySelector() {
     const { width, height } = this.scale;
     const modal = this.add.container(0, 0).setDepth(60);
     modal.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.85).setInteractive());
-    modal.add(drawPanel(this, 120, 50, width - 240, height - 100, 0x0f172a, 0.98, 0xa855f7));
+    modal.add(drawPanel(this, 140, 50, width - 280, height - 100, 0x0f172a, 0.98, 0x38bdf8));
 
-    modal.add(this.add.text(width / 2, 85, '🎮 ZONA DE MINIJUEGOS DE VALENTIC', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '22px',
-      fontStyle: 'bold',
-      color: '#f3e8ff',
-    }).setOrigin(0.5));
-
-    modal.add(this.add.text(width / 2, 116, 'Modo Libre y Relajante: ¡Juega todo lo que quieras sin límites ni perder!', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '14px',
-      color: '#c084fc',
-    }).setOrigin(0.5));
-
-    // Tarjeta 1: Flappy Nube
-    modal.add(drawPanel(this, 150, 146, 200, 230, 0x1e293b, 1, 0x38bdf8));
-    modal.add(this.add.text(250, 172, '☁️ Flappy Nube', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '17px',
-      fontStyle: 'bold',
-      color: '#38bdf8',
-    }).setOrigin(0.5));
-    modal.add(this.add.text(250, 224, 'Vuela flotando por los cielos y atrapa todas las estrellas de calma.', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '13px',
-      color: '#e2e8f0',
-      align: 'center',
-      wordWrap: { width: 180 },
-    }).setOrigin(0.5));
-    modal.add(createButton(this, 250, 336, 160, 40, '▶ Jugar Vuelo', {
-      fill: 0x0284c7,
-      hover: 0x0369a1,
-      onClick: () => {
-        modal.destroy();
-        this.scene.start('MinigameScene', { mode: 'free', type: 'flappy' });
-      },
-    }));
-
-    // Tarjeta 2: Palomitas (Popcorn Doodle)
-    modal.add(drawPanel(this, 380, 146, 200, 230, 0x1e293b, 1, 0xf59e0b));
-    modal.add(this.add.text(480, 172, '🍿 Palomitas Calma', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '16.5px',
-      fontStyle: 'bold',
-      color: '#fbbf24',
-    }).setOrigin(0.5));
-    modal.add(this.add.text(480, 224, '¡Toca las palomitas en el aire antes de que caigan! Estilo Google Doodle.', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '13px',
-      color: '#e2e8f0',
-      align: 'center',
-      wordWrap: { width: 180 },
-    }).setOrigin(0.5));
-    modal.add(createButton(this, 480, 336, 160, 40, '▶ Jugar Palomitas', {
-      fill: 0xd97706,
-      hover: 0xb45309,
-      onClick: () => {
-        modal.destroy();
-        this.scene.start('MinigameScene', { mode: 'free', type: 'popcorn' });
-      },
-    }));
-
-    // Tarjeta 3: Río de la Serenidad
-    modal.add(drawPanel(this, 610, 146, 200, 230, 0x1e293b, 1, 0x22c55e));
-    modal.add(this.add.text(710, 172, '🌊 Río de Serenidad', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '16.5px',
-      fontStyle: 'bold',
-      color: '#4ade80',
-    }).setOrigin(0.5));
-    modal.add(this.add.text(710, 224, 'Navega suavemente y recolecta los orbes de colores del semáforo.', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '13px',
-      color: '#e2e8f0',
-      align: 'center',
-      wordWrap: { width: 180 },
-    }).setOrigin(0.5));
-    modal.add(createButton(this, 710, 336, 160, 40, '▶ Jugar Río', {
-      fill: 0x16a34a,
-      hover: 0x22c55e,
-      onClick: () => {
-        modal.destroy();
-        this.scene.start('MinigameScene', { mode: 'free', type: 'river' });
-      },
-    }));
-
-    // Botón Cerrar
-    modal.add(createButton(this, width / 2, 436, 160, 38, 'Volver al Menú', {
-      fill: 0x334155,
-      hover: 0x475569,
-      onClick: () => modal.destroy(),
-    }));
-  }
-
-  openVideoPrompt() {
-    const { width, height } = this.scale;
-    const modal = this.add.container(0, 0).setDepth(60);
-    modal.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.85).setInteractive());
-    modal.add(drawPanel(this, 180, 80, width - 360, height - 160, 0x0f172a, 0.98, 0x38bdf8));
-
-    modal.add(this.add.image(width / 2, 160, 'valentic').setScale(0.24));
-
-    modal.add(this.add.text(width / 2, 240, '🎬 Video Oficial de ValenTIC', {
+    modal.add(this.add.text(width / 2, 85, '📅 SELECCIONA EL DÍA DE LA SEMANA', {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '22px',
       fontStyle: 'bold',
       color: '#ffffff',
     }).setOrigin(0.5));
 
-    modal.add(this.add.text(width / 2, 280, 'ValenTIC te enseña cómo reconocer y calmar tus emociones.\nSe abrirá en una nueva pestaña para que lo veas con calma.', {
-      fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '14.5px',
-      color: '#bae6fd',
-      align: 'center',
-      wordWrap: { width: 500 },
-      lineSpacing: 4,
-    }).setOrigin(0.5));
+    const days = [
+      { day: 1, title: 'Día 1 (Lunes): La Mañana del Desafío', sub: 'Pausa Roja en el hogar y colegio.' },
+      { day: 2, title: 'Día 2 (Martes): El Trabajo en Equipo', sub: 'La maqueta rota: reparar en vez de culpar.' },
+      { day: 3, title: 'Día 3 (Miércoles): El Rumor en el Recreo', sub: 'Aclarar chismes con hechos y empatía.' },
+      { day: 4, title: 'Día 4 (Jueves): La Ansiedad de Examen', sub: 'Técnica 4-7-8 contra la mente en blanco.' },
+      { day: 5, title: 'Día 5 (Viernes): El Gran Festival Escolar', sub: 'Gran mediación y Graduación de Guardianes.' },
+    ];
 
-    modal.add(createButton(this, width / 2, 350, 280, 48, '▶ Abrir Video en Facebook Reel', {
-      fill: 0x0284c7,
-      hover: 0x0369a1,
-      fontSize: '16px',
-      onClick: () => {
-        window.open('https://www.facebook.com/reel/3205881169617381', '_blank');
-      },
-    }));
+    days.forEach((d, i) => {
+      const y = 140 + i * 54;
+      const btn = createButton(this, width / 2, y, 480, 46, `${d.title}\n(${d.sub})`, {
+        fill: i === 0 ? 0x16a34a : 0x1e293b,
+        hover: 0x2563eb,
+        border: 0x60a5fa,
+        fontSize: '13px',
+        onClick: () => {
+          modal.destroy();
+          gameState.startNewAdventure(true, d.day);
+          this.scene.start('WorldScene');
+        },
+      });
+      modal.add(btn);
+    });
 
-    modal.add(createButton(this, width / 2, 412, 160, 36, 'Regresar', {
+    modal.add(createButton(this, width / 2, 440, 160, 36, 'Volver', {
       fill: 0x334155,
       hover: 0x475569,
-      fontSize: '14px',
       onClick: () => modal.destroy(),
     }));
   }
 
-  openDiaryModal() {
+  openMinigamesSelector() {
     const { width, height } = this.scale;
     const modal = this.add.container(0, 0).setDepth(60);
-    modal.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.82).setInteractive());
-    modal.add(drawPanel(this, 140, 88, width - 280, height - 176, 0xfefce8, 0.99, 0xb45309));
+    modal.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.88).setInteractive());
+    modal.add(drawPanel(this, 40, 30, width - 80, height - 60, 0x0f172a, 0.98, 0xa855f7));
 
-    modal.add(this.add.text(width / 2, 128, gameState.story.diary.title, {
+    modal.add(this.add.text(width / 2, 58, '🎮 CATÁLOGO DE LOS 5 MINIJUEGOS DE VALENTIC', {
       fontFamily: 'Trebuchet MS, sans-serif',
-      fontSize: '22px',
+      fontSize: '20px',
+      fontStyle: 'bold',
+      color: '#f3e8ff',
+    }).setOrigin(0.5));
+
+    // Selector de Dificultad (⚡ Desafío con 3 vidas vs 🧘 Zen libre)
+    const diffLabel = () => `Dificultad: ${this.selectedDifficulty === 'challenge' ? '⚡ Desafío (3 Vidas)' : '🧘 Modo Zen (Vidas Infinitas)'}`;
+    const diffBtn = createButton(this, width / 2, 90, 340, 30, diffLabel(), {
+      fill: this.selectedDifficulty === 'challenge' ? 0xdc2626 : 0x16a34a,
+      hover: 0x2563eb,
+      fontSize: '13px',
+      onClick: () => {
+        this.selectedDifficulty = this.selectedDifficulty === 'challenge' ? 'zen' : 'challenge';
+        diffBtn.setLabel(diffLabel());
+      },
+    });
+    modal.add(diffBtn);
+
+    const minigames = [
+      { key: 'flappy', name: '☁️ Flappy Nube', desc: 'Vuelo y esquivar tormentas.' },
+      { key: 'popcorn', name: '🍿 Palomitas Calma', desc: 'Atrapa palomitas, evita bombas.' },
+      { key: 'river', name: '🌊 Río Serenidad', desc: 'Navega esquivando remolinos.' },
+      { key: 'mario', name: '🍄 Mario Saltador', desc: 'Plataformas, bloques [?] y enemigos.' },
+      { key: 'subway', name: '🏃 Subway Runner', desc: '3 Carriles, saltos de vallas y trenes.' },
+    ];
+
+    minigames.forEach((mg, i) => {
+      const colX = 130 + i * 145;
+      modal.add(drawPanel(this, colX - 68, 125, 136, 260, 0x1e293b, 1, 0x60a5fa));
+      modal.add(this.add.text(colX, 150, mg.name, {
+        fontFamily: 'Trebuchet MS, sans-serif',
+        fontSize: '14px',
+        fontStyle: 'bold',
+        color: '#fde047',
+        align: 'center',
+        wordWrap: { width: 125 },
+      }).setOrigin(0.5));
+
+      modal.add(this.add.text(colX, 220, mg.desc, {
+        fontFamily: 'Trebuchet MS, sans-serif',
+        fontSize: '12px',
+        color: '#cbd5e1',
+        align: 'center',
+        wordWrap: { width: 120 },
+      }).setOrigin(0.5));
+
+      modal.add(createButton(this, colX, 335, 116, 40, '▶ Jugar', {
+        fill: 0x7c3aed,
+        hover: 0x8b5cf6,
+        fontSize: '14px',
+        onClick: () => {
+          modal.destroy();
+          this.scene.start('MinigameScene', {
+            mode: 'free',
+            type: mg.key,
+            difficulty: this.selectedDifficulty,
+          });
+        },
+      }));
+    });
+
+    modal.add(createButton(this, width / 2, 442, 170, 36, 'Volver al Menú', {
+      fill: 0x334155,
+      hover: 0x475569,
+      onClick: () => modal.destroy(),
+    }));
+  }
+
+  openDiaryModal(pageIndex = 1) {
+    const { width, height } = this.scale;
+    const modal = this.add.container(0, 0).setDepth(60);
+    modal.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.85).setInteractive());
+    modal.add(drawPanel(this, 120, 60, width - 240, height - 120, 0xfefce8, 0.99, 0xb45309));
+
+    const pages = gameState.story.diary_pages || [gameState.story.diary];
+    const curPage = pages[Math.min(pages.length - 1, Math.max(0, pageIndex - 1))];
+
+    modal.add(this.add.text(width / 2, 100, `📖 DIARIO DE CONVIVENCIA · PÁGINA ${pageIndex} DE ${pages.length}`, {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '20px',
       fontStyle: 'bold',
       color: '#78350f',
     }).setOrigin(0.5));
 
-    if (gameState.save.diaryUnlocked) {
-      soundManager.playVoice('diary_p1');
-      modal.add(this.add.text(width / 2, 224, gameState.story.diary.summary, {
-        fontFamily: 'Trebuchet MS, sans-serif',
-        fontSize: '18px',
-        color: '#1e293b',
-        align: 'center',
-        wordWrap: { width: 600 },
-        lineSpacing: 6,
-      }).setOrigin(0.5));
-      modal.add(this.add.text(width / 2, 326, `💡 ${gameState.story.diary.tip}`, {
-        fontFamily: 'Trebuchet MS, sans-serif',
-        fontSize: '16px',
-        fontStyle: 'bold',
-        color: '#166534',
-        align: 'center',
-        wordWrap: { width: 600 },
-      }).setOrigin(0.5));
-    } else {
-      modal.add(this.add.text(width / 2, 256, '🔒 Completa la aventura del Día 1 para desbloquear tu primera página del Diario.', {
-        fontFamily: 'Trebuchet MS, sans-serif',
-        fontSize: '17px',
-        color: '#475569',
-        align: 'center',
-        wordWrap: { width: 560 },
-      }).setOrigin(0.5));
+    modal.add(this.add.text(width / 2, 138, curPage.title, {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '18px',
+      fontStyle: 'bold',
+      color: '#92400e',
+    }).setOrigin(0.5));
+
+    modal.add(this.add.text(width / 2, 220, curPage.summary, {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '16px',
+      color: '#1e293b',
+      align: 'center',
+      wordWrap: { width: 620 },
+      lineSpacing: 6,
+    }).setOrigin(0.5));
+
+    modal.add(this.add.text(width / 2, 320, `💡 ${curPage.tip}`, {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '15px',
+      fontStyle: 'bold',
+      color: '#166534',
+      align: 'center',
+      wordWrap: { width: 620 },
+    }).setOrigin(0.5));
+
+    // Botones de Anterior y Siguiente Página
+    if (pageIndex > 1) {
+      modal.add(createButton(this, 200, 410, 140, 38, '◀ Página Anterior', {
+        fill: 0x92400e,
+        hover: 0xb45309,
+        fontSize: '13px',
+        onClick: () => {
+          modal.destroy();
+          this.openDiaryModal(pageIndex - 1);
+        },
+      }));
     }
 
-    modal.add(createButton(this, width / 2, 408, 170, 40, 'Cerrar', {
+    if (pageIndex < pages.length) {
+      modal.add(createButton(this, width - 200, 410, 140, 38, 'Página Siguiente ▸', {
+        fill: 0x166534,
+        hover: 0x15803d,
+        fontSize: '13px',
+        onClick: () => {
+          modal.destroy();
+          this.openDiaryModal(pageIndex + 1);
+        },
+      }));
+    }
+
+    modal.add(createButton(this, width / 2, 410, 150, 38, 'Cerrar Diario', {
       fill: 0x334155,
       hover: 0x475569,
-      onClick: () => {
-        soundManager.stopVoice();
-        modal.destroy();
-      },
+      onClick: () => modal.destroy(),
     }));
   }
 
