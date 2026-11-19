@@ -752,6 +752,702 @@
         "goodMapLine": "¡Todos aplauden y bajan los brazos! Profe Ricardo y la rectora entregan la Medalla de la Convivencia a Alex y Valentic.",
         "badMapLine": "Hubo momentos difíciles, pero lograste culminar la semana con valiosas lecciones. ¡Ve a la salida!"
       }
+    },
+    "dia2_hogar": {
+      "id": "dia2_hogar",
+      "characterName": "Elena (Mamá)",
+      "portrait": "portrait_elena",
+      "provocation": "\"¡Alex! Dejaste los materiales de la maqueta tirados en la sala y salgo en 5 minutos. ¡Vas a llegar tarde por desordenado!\"",
+      "redTip": "¡Alto! Mantén ESPACIO para apagar las 3 chispas de rabia.",
+      "decoder": {
+        "prompt": "¿Por qué mamá te reclama con tanta prisa?",
+        "options": [
+          {
+            "icon": "⏰",
+            "text": "Le da angustia que Alex llegue tarde y ella pierda el transporte.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! El afán de mamá no es odio, es estrés matutino."
+          },
+          {
+            "icon": "😡",
+            "text": "Quiere arruinar mi proyecto de ciencias.",
+            "isCorrect": false,
+            "feedback": "Pensar en maldad solo aumenta tu enojo."
+          },
+          {
+            "icon": "🚪",
+            "text": "Le encanta hacerme pasar una mala mañana.",
+            "isCorrect": false,
+            "feedback": "Tomarlo como un ataque te bloquea."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Tírale la mochila y dile que no vas a ir a ninguna parte!\"",
+        "options": [
+          {
+            "text": "Si me altero, saldré sin los materiales. Mejor empaco rápido con calma.",
+            "isCorrect": true,
+            "feedback": "¡Muy bien! Salvaste los materiales y cuidaste la paz."
+          },
+          {
+            "text": "Le grito que ella es la desordenada.",
+            "isCorrect": false,
+            "feedback": "Contestar con insultos agrava el conflicto."
+          },
+          {
+            "text": "Me pongo a llorar en la sala.",
+            "isCorrect": false,
+            "feedback": "El llanto no empaca los materiales."
+          }
+        ],
+        "failText": "Alex sale con la mamá disgustada hacia el colegio."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Mamá, entiendo que vamos con el tiempo justo...",
+            "valid": true
+          },
+          {
+            "text": "Mamá, tú siempre me estás gritando por tonterías...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...pero cuando me aceleras así me pongo muy nervioso y se me olvidan las cosas...",
+            "valid": true
+          },
+          {
+            "text": "...y me dan ganas de no volver nunca a esta casa...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...dame dos minutos, los meto a la bolsa y salimos tranquilos.",
+            "valid": true
+          },
+          {
+            "text": "...cállate y déjame hacer lo que se me dé la gana.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Elena suspira y sonríe: \"Está bien Alex, empácalos rápido y vamos\". ¡Ve por la puerta al colegio!",
+        "badMapLine": "Saliste de casa con tensión. Ve por la puerta hacia el colegio."
+      }
+    },
+    "dia2_patio": {
+      "id": "dia2_patio",
+      "characterName": "Compañeros en el Patio (Salida)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Miren ese volcán tan chueco y lleno de cinta! ¡Parece una torta aplastada, jaja!\"",
+      "redTip": "¡Alto! Mantén ESPACIO para no responder a las burlas con violencia.",
+      "decoder": {
+        "prompt": "¿Por qué se burlan de la maqueta reparada?",
+        "options": [
+          {
+            "icon": "👀",
+            "text": "Buscan provocar una reacción para llamar la atención del grupo.",
+            "isCorrect": true,
+            "feedback": "¡Acertaste! Si no caes en su provocación, la burla pierde fuerza."
+          },
+          {
+            "icon": "🔨",
+            "text": "Tienen derecho a destruirla si quedó fea.",
+            "isCorrect": false,
+            "feedback": "Nadie tiene derecho a dañar el trabajo ajeno."
+          },
+          {
+            "icon": "😭",
+            "text": "Es verdad, somos unos fracasados.",
+            "isCorrect": false,
+            "feedback": "No te desprecies por un tropiezo reparado."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Rómpeles sus maquetas para que aprendan a respetar!\"",
+        "options": [
+          {
+            "text": "Mateo y yo nos esforzamos por salvar el trabajo; una burla no nos quita el mérito.",
+            "isCorrect": true,
+            "feedback": "¡Gran madurez! Desarmaste la burla con orgullo sereno."
+          },
+          {
+            "text": "Empujo al que se burló para que se calle.",
+            "isCorrect": false,
+            "feedback": "La violencia física arruina tu jornada."
+          },
+          {
+            "text": "Me pongo a pisotear mi propia maqueta de la rabia.",
+            "isCorrect": false,
+            "feedback": "Destruir tu trabajo te perjudica a ti mismo."
+          }
+        ],
+        "failText": "Hubo empujones a la salida y llamaron a coordinación."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Amigos, la maqueta se cayó por un accidente y la reparamos juntos...",
+            "valid": true
+          },
+          {
+            "text": "¡Ustedes son unos payasos envidiosos!...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...y nos sentimos orgullosos de haber sacado el proyecto adelante...",
+            "valid": true
+          },
+          {
+            "text": "...y les vamos a dar una golpiza a la salida...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...así que respeten nuestro trabajo como nosotros respetamos el suyo.",
+            "valid": true
+          },
+          {
+            "text": "...lárguense ya mismo si no quieren problemas.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo te choca la mano: \"¡Bien dicho Alex!\". Ve a la salida (★) para terminar el Día 2.",
+        "badMapLine": "Terminaste la jornada con tensión. Ve a la salida (★) para reflexionar."
+      }
+    },
+    "dia3_hogar": {
+      "id": "dia3_hogar",
+      "characterName": "Elena (Mamá)",
+      "portrait": "portrait_elena",
+      "provocation": "\"¡Alex! Te veo pegado a ese celular con cara de amargado. ¡Te lo voy a decomisar si no hablas!\"",
+      "redTip": "¡Alto! Mantén ESPACIO para calmar la angustia del chisme digital.",
+      "decoder": {
+        "prompt": "¿Por qué mamá te amenaza con quitar el celular?",
+        "options": [
+          {
+            "icon": "❤️",
+            "text": "Se preocupa al verte triste y no sabe cómo acercarse a ti.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! Su frustración nace de querer ayudarte y no saber cómo."
+          },
+          {
+            "icon": "📱",
+            "text": "Quiere quedarse con mi celular para revisar mis chats.",
+            "isCorrect": false,
+            "feedback": "Pensar en desconfianza rompe la comunicación."
+          },
+          {
+            "icon": "😤",
+            "text": "Solo quiere hacerme enojar antes de irme.",
+            "isCorrect": false,
+            "feedback": "Victimizarte no resuelve el problema escolar."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Escóndete en el baño y sal sin despedirte!\"",
+        "options": [
+          {
+            "text": "Puedo contarle a mamá con calma que hay un rumor falso en el colegio.",
+            "isCorrect": true,
+            "feedback": "¡Excelente! El apoyo familiar es tu mejor escudo."
+          },
+          {
+            "text": "Le tiro el celular a la mesa furioso.",
+            "isCorrect": false,
+            "feedback": "La agresividad rompe el diálogo con mamá."
+          },
+          {
+            "text": "Salgo dando un portazo sin desayunar.",
+            "isCorrect": false,
+            "feedback": "Irte con el estómago vacío y enojado empeora tu día."
+          }
+        ],
+        "failText": "Alex sale de casa sin hablar con mamá y lleno de angustia."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Mamá, vi en los mensajes del grupo escolar un rumor falso sobre mí...",
+            "valid": true
+          },
+          {
+            "text": "¡Tú nunca me entiendes y te metes en todo!...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...y tengo mucha tristeza y miedo de que nadie me crea...",
+            "valid": true
+          },
+          {
+            "text": "...y odio a todo el mundo en ese colegio...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...¿me das un abrazo antes de irme al colegio?",
+            "valid": true
+          },
+          {
+            "text": "...déjame en paz y no te metas en mi vida.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mamá te abraza con fuerza: \"Ánimo Alex, la verdad siempre sale a la luz\". ¡Sal al colegio!",
+        "badMapLine": "Saliste de casa con pesadez. Ve por la puerta hacia el colegio."
+      }
+    },
+    "dia3_patio": {
+      "id": "dia3_patio",
+      "characterName": "Mateo (Salida del Colegio)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Ey Alex! El que inventó el chisme dice que tú le tienes miedo. ¿Nos vamos a dar en la esquina o qué?\"",
+      "redTip": "¡Alto! Mantén ESPACIO para apagar las chispas de la provocación callejera.",
+      "decoder": {
+        "prompt": "¿Por qué Mateo te propone pelear en la esquina?",
+        "options": [
+          {
+            "icon": "🎭",
+            "text": "Siente presión de grupo para ver un espectáculo y validar su rudeza.",
+            "isCorrect": true,
+            "feedback": "¡Brillante análisis! La presión social incita a pelear por aparentar."
+          },
+          {
+            "icon": "🥊",
+            "text": "Porque pelear es la única forma de ser un hombre de verdad.",
+            "isCorrect": false,
+            "feedback": "Un mito destructivo que genera lesiones y violencia."
+          },
+          {
+            "icon": "☠️",
+            "text": "Porque Alex merece ser golpeado por todos.",
+            "isCorrect": false,
+            "feedback": "La violencia nunca es merecida."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Dile que sí, que traiga a sus amigos para que vean cómo lo dejas!\"",
+        "options": [
+          {
+            "text": "Pelear no demuestra nada excepto falta de control. Ya aclaramos la verdad.",
+            "isCorrect": true,
+            "feedback": "¡Valentía real! Demostraste que el autocontrol es el verdadero poder."
+          },
+          {
+            "text": "Le pego de una vez antes de que salgamos del portón.",
+            "isCorrect": false,
+            "feedback": "Empezar una pelea te traerá expulsión del colegio."
+          },
+          {
+            "text": "Salgo corriendo asustado.",
+            "isCorrect": false,
+            "feedback": "Huir con pánico no te da paz; hablar con firmeza sí."
+          }
+        ],
+        "failText": "Hubo riña en el portón y llamaron a la policía escolar."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Mateo, el rumor ya se aclaró con la verdad en el comedor...",
+            "valid": true
+          },
+          {
+            "text": "Mateo, tú eres un cobarde que solo sabe buscar peleas...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...y yo no tengo necesidad de pelear para demostrar quién soy...",
+            "valid": true
+          },
+          {
+            "text": "...y te voy a romper la cara para que aprendas...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...vamos cada uno a su casa en paz.",
+            "valid": true
+          },
+          {
+            "text": "...te espero afuera con mis amigos.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo baja la cabeza: \"Tienes razón, Alex. Paz\". Ve a la salida (★) para terminar el Día 3.",
+        "badMapLine": "Terminaste con zozobra. Ve a la salida (★) para reflexionar."
+      }
+    },
+    "dia4_hogar": {
+      "id": "dia4_hogar",
+      "characterName": "Elena (Mamá)",
+      "portrait": "portrait_elena",
+      "provocation": "\"¡Alex! Hoy tienes el examen acumulativo. ¡Donde te saques mala nota te castigo todo el fin de semana!\"",
+      "redTip": "¡Alto! La amenaza te bloquea. Mantén ESPACIO para respirar y bajar la taquicardia.",
+      "decoder": {
+        "prompt": "¿Por qué mamá te amenaza con castigos antes del examen?",
+        "options": [
+          {
+            "icon": "🎓",
+            "text": "Teme por tu futuro académico y cree que la presión te hará estudiar más.",
+            "isCorrect": true,
+            "feedback": "¡Correcto! Su intención es que te vaya bien, aunque la forma no sea la adecuada."
+          },
+          {
+            "icon": "⛓️",
+            "text": "Le gusta encerrarme los fines de semana.",
+            "isCorrect": false,
+            "feedback": "Pensar en crueldad solo aumenta tu miedo."
+          },
+          {
+            "icon": "📉",
+            "text": "Sabe que soy bruto y me lo recuerda.",
+            "isCorrect": false,
+            "feedback": "No te ataques con pensamientos derrotistas."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Dile que no te importa perder y que no vas a ir al examen!\"",
+        "options": [
+          {
+            "text": "Mamá está asustada por mis notas. Yo ya estudié y daré lo mejor con calma.",
+            "isCorrect": true,
+            "feedback": "¡Gran fortaleza mental! Tu seguridad desarmó la ansiedad."
+          },
+          {
+            "text": "Le grito que por su culpa voy a reprobar.",
+            "isCorrect": false,
+            "feedback": "Echar culpas aumenta tu taquicardia antes de la prueba."
+          },
+          {
+            "text": "Me encierro en la pieza llorando.",
+            "isCorrect": false,
+            "feedback": "Aislarte no te ayuda a presentar el examen."
+          }
+        ],
+        "failText": "Alex sale al examen con la mente llena de pánico."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Mamá, entiendo que para ti es fundamental que pase este examen...",
+            "valid": true
+          },
+          {
+            "text": "¡Tú siempre me tienes bajo una tiranía insoportable!...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...pero cuando me amenazas con castigos siento tanta presión que me bloqueo...",
+            "valid": true
+          },
+          {
+            "text": "...y ojalá me raje para que sufras...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...confía en mí, estudié a conciencia y haré mi mejor esfuerzo.",
+            "valid": true
+          },
+          {
+            "text": "...no me vuelvas a dirigir la palabra.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Elena se calma y te pone la mano en el hombro: \"Confío en ti, mi hijo. Ve con Dios\". ¡Sal al colegio!",
+        "badMapLine": "Saliste al examen con el corazón agitado. Ve al colegio."
+      }
+    },
+    "dia4_patio": {
+      "id": "dia4_patio",
+      "characterName": "Compañeros en el Patio (Salida del Examen)",
+      "portrait": "portrait_mateo",
+      "provocation": "\"¡Ese examen estaba imposible! ¡Ese profesor Ricardo es un desgraciado, vamos a rayarle el carro!\"",
+      "redTip": "¡Alto! La frustración colectiva incita a hacer daño. Mantén ESPACIO para mediar.",
+      "decoder": {
+        "prompt": "¿Por qué quieren vandalizar el carro del profesor?",
+        "options": [
+          {
+            "icon": "🚗",
+            "text": "Están llenos de impotencia y buscan una forma destructiva de descargar su culpa.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! El vandalismo es el escape inmaduro de la frustración."
+          },
+          {
+            "icon": "⚖️",
+            "text": "Porque rayar carros es un derecho estudiantil legítimo.",
+            "isCorrect": false,
+            "feedback": "El vandalismo es un delito y trae graves consecuencias."
+          },
+          {
+            "icon": "🔥",
+            "text": "Porque el profesor se lo merece por calificar estricto.",
+            "isCorrect": false,
+            "feedback": "La exigencia pedagógica no justifica la agresión."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Únete a ellos y toma una piedra para no quedar como el sapo del salón!\"",
+        "options": [
+          {
+            "text": "Dañar cosas no cambia la nota y nos traerá problemas graves con la policía. Podemos pedir retroalimentación.",
+            "isCorrect": true,
+            "feedback": "¡Liderazgo positivo! Frenaste un acto vandálico."
+          },
+          {
+            "text": "Tiro una piedra también para que no me digan gallina.",
+            "isCorrect": false,
+            "feedback": "Seguir a la masa en la violencia te hace cómplice."
+          },
+          {
+            "text": "Me voy corriendo en silencio.",
+            "isCorrect": false,
+            "feedback": "Pudiste alzar tu voz para frenar la estupidez."
+          }
+        ],
+        "failText": "Hubo daños en el parqueadero y suspendieron a varios estudiantes."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Muchachos, todos sentimos que la prueba estuvo muy difícil...",
+            "valid": true
+          },
+          {
+            "text": "¡Son todos una partida de vándalos descerebrados!...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...pero dañar el carro del profe solo nos va a traer problemas con la policía...",
+            "valid": true
+          },
+          {
+            "text": "...y a mí me importa un bledo si los meten a la cárcel...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...vamos mañana en grupo a pedirle que nos explique los puntos que no entendimos.",
+            "valid": true
+          },
+          {
+            "text": "...y si hacen algo los voy a sapear ya mismo.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Mateo bota la piedra: \"Tienes razón Alex, nos íbamos a tirar el año\". Ve a la salida (★) para terminar el Día 4.",
+        "badMapLine": "Terminaste la jornada con tensión. Ve a la salida (★) para reflexionar."
+      }
+    },
+    "dia5_hogar": {
+      "id": "dia5_hogar",
+      "characterName": "Elena (Mamá)",
+      "portrait": "portrait_elena",
+      "provocation": "\"¡Alex! Hoy es el gran Festival de Convivencia Escolar. ¡Mírame a los ojos antes de irte!\"",
+      "redTip": "¡Alto! No es una queja, es un momento especial. Mantén presionado ESPACIO.",
+      "decoder": {
+        "prompt": "¿Por qué mamá te llama con tanta emoción hoy?",
+        "options": [
+          {
+            "icon": "🌟",
+            "text": "Ha visto tu esfuerzo esta semana para no gritar y está muy orgullosa de ti.",
+            "isCorrect": true,
+            "feedback": "¡Maravilloso! El cambio en ti transformó el ambiente del hogar."
+          },
+          {
+            "icon": "😒",
+            "text": "Me va a regañar por algo viejo.",
+            "isCorrect": false,
+            "feedback": "No supongas agresión cuando hay cariño."
+          },
+          {
+            "icon": "🚪",
+            "text": "No quiere que vaya al festival.",
+            "isCorrect": false,
+            "feedback": "Mamá desea celebrar tu logro."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡Dile que no necesitas sus sermones cursis y vete ya!\"",
+        "options": [
+          {
+            "text": "Agradecer el amor de mamá fortalece mi serenidad para el gran día.",
+            "isCorrect": true,
+            "feedback": "¡La Sombra sonríe con paz! Tu corazón está pleno."
+          },
+          {
+            "text": "Le pongo mala cara y salgo rápido.",
+            "isCorrect": false,
+            "feedback": "El desprecio hiere los momentos valiosos."
+          },
+          {
+            "text": "Le reclamo por los días anteriores.",
+            "isCorrect": false,
+            "feedback": "Traer rencores pasados amarga el presente."
+          }
+        ],
+        "failText": "Alex salió sin compartir este lindo momento con mamá."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Mamá, esta semana ambos aprendimos a respirar antes de gritar...",
+            "valid": true
+          },
+          {
+            "text": "Mamá, por fin te diste cuenta de que tú eras la que molestaba...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...y me siento muy feliz y agradecido por tu apoyo en mi colegio...",
+            "valid": true
+          },
+          {
+            "text": "...y espero que no me vuelvas a fregar la vida...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...te invito hoy en la tarde al festival para que me veas graduar de Guardián.",
+            "valid": true
+          },
+          {
+            "text": "...y dame plata para gastar en el festival.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Elena te abraza con lágrimas de orgullo: \"Allá estaré en primera fila, mi campeón\". ¡Ve al colegio!",
+        "badMapLine": "Saliste hacia el gran festival escolar. ¡Ve por la puerta hacia el colegio!"
+      }
+    },
+    "dia5_colegio": {
+      "id": "dia5_colegio",
+      "characterName": "Sofía y Mateo (Pasillos del Festival)",
+      "portrait": "portrait_sofia",
+      "provocation": "\"¡Alex! En la cancha la final de fútbol y el concurso de talentos están a punto de cruzarse. ¡Hay muchísima tensión entre las barras!\"",
+      "redTip": "¡Alto! Mantén presionado ESPACIO para enfocar tu energía mediadora.",
+      "decoder": {
+        "prompt": "¿Qué rol debes asumir hoy en el colegio?",
+        "options": [
+          {
+            "icon": "🛡️",
+            "text": "Ser el Guardián de la Convivencia y promover el Semáforo Emocional entre los grupos.",
+            "isCorrect": true,
+            "feedback": "¡Exacto! Tienes las herramientas para guiar a tu comunidad."
+          },
+          {
+            "icon": "📣",
+            "text": "Gritar con la barra brava para que gane mi salón a como dé lugar.",
+            "isCorrect": false,
+            "feedback": "El fanatismo ciego genera peleas."
+          },
+          {
+            "icon": "🙈",
+            "text": "Esconderme en la biblioteca y no ver el festival.",
+            "isCorrect": false,
+            "feedback": "Tu liderazgo es necesario hoy."
+          }
+        ]
+      },
+      "shadow": {
+        "whisper": "\"¡No te metas, deja que se insulten o te llamarán aburrido!\"",
+        "options": [
+          {
+            "text": "ValenTIC me enseñó que la verdadera valentía es defender la paz y la amistad.",
+            "isCorrect": true,
+            "feedback": "¡Tu convicción inspira a Sofía y Mateo!"
+          },
+          {
+            "text": "Me pongo a corear insultos contra el otro equipo.",
+            "isCorrect": false,
+            "feedback": "Incitar al odio rompe el festival."
+          },
+          {
+            "text": "Me quedo mirando con miedo.",
+            "isCorrect": false,
+            "feedback": "La apatía no construye convivencia."
+          }
+        ],
+        "failText": "La tensión en los pasillos subió antes de salir a la cancha."
+      },
+      "cnv": {
+        "hecho": [
+          {
+            "text": "Amigos de las barras, estamos aquí para celebrar el talento de todos...",
+            "valid": true
+          },
+          {
+            "text": "¡Cállense todos y dejen de ser tan insoportables!...",
+            "valid": false
+          }
+        ],
+        "sentimiento": [
+          {
+            "text": "...y queremos disfrutar una fiesta en paz sin que nadie termine lastimado...",
+            "valid": true
+          },
+          {
+            "text": "...y dan lástima peleando por un trofeo de plástico...",
+            "valid": false
+          }
+        ],
+        "peticion": [
+          {
+            "text": "...vamos a la cancha con alegría y respeto por el esfuerzo de cada compañero.",
+            "valid": true
+          },
+          {
+            "text": "...y el que grite lo sacamos a empujones.",
+            "valid": false
+          }
+        ]
+      },
+      "outcome": {
+        "goodMapLine": "Sofía y Mateo sonríen: \"¡Vamos contigo, Alex!\". Sal por la puerta hacia el Gran Patio (★).",
+        "badMapLine": "Los pasillos están tensos. Sal por la puerta hacia el Gran Patio."
+      }
     }
   },
   "diary_pages": [

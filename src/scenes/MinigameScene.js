@@ -26,6 +26,17 @@ export class MinigameScene extends Phaser.Scene {
     soundManager.attach(this);
     soundManager.playBGM('bgm_hogar');
 
+    // Inicializar entradas del teclado globales para todos los minijuegos
+    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.wasd = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+    });
+
     // Capas
     this.bgLayer = this.add.container(0, 0);
     this.gameLayer = this.add.container(0, 0);
@@ -248,14 +259,19 @@ export class MinigameScene extends Phaser.Scene {
       color: '#e2e8f0',
     }).setOrigin(0.5));
 
-    modal.add(createButton(this, width / 2, height / 2 + 95, 230, 44, '¡Continuar Aventura! ▸', {
+    const winBtnLabel = this.mode === 'story' ? '¡Continuar Aventura! ▸' : 'Volver al Menú 🏆';
+    modal.add(createButton(this, width / 2, height / 2 + 95, 230, 44, winBtnLabel, {
       fill: 0x16a34a,
       hover: 0x22c55e,
       onClick: () => {
-        if (this.onComplete) {
-          this.onComplete();
+        if (this.mode === 'story') {
+          if (this.onComplete) {
+            this.onComplete();
+          } else {
+            this.scene.start('WorldScene');
+          }
         } else {
-          this.scene.start('WorldScene');
+          this.scene.start('MenuScene');
         }
       },
     }));
@@ -696,16 +712,20 @@ export class MinigameScene extends Phaser.Scene {
 
   updateMario(delta) {
     const { width, height } = this.scale;
-    const cursors = this.input.keyboard.createCursorKeys();
+    const cursors = this.cursors;
     const floorY = height - 40;
 
     // Movimiento horizontal
     let move = 0;
-    if (cursors.left.isDown || this.marioTouch.left) move = -4.2;
-    if (cursors.right.isDown || this.marioTouch.right) move = 4.2;
+    if (cursors.left.isDown || this.wasd?.left?.isDown || this.marioTouch.left) move = -4.2;
+    if (cursors.right.isDown || this.wasd?.right?.isDown || this.marioTouch.right) move = 4.2;
     this.valentic.x += move;
 
-    if (Phaser.Input.Keyboard.JustDown(cursors.up) || Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+    if (
+      Phaser.Input.Keyboard.JustDown(cursors.up)
+      || (this.wasd?.up && Phaser.Input.Keyboard.JustDown(this.wasd.up))
+      || Phaser.Input.Keyboard.JustDown(this.spaceKey)
+    ) {
       this.marioJump();
     }
 
@@ -812,11 +832,29 @@ export class MinigameScene extends Phaser.Scene {
     this.subwayItems = [];
 
     // Controles: Izquierda / Derecha para cambiar carril; Arriba para saltar
-    const cursors = this.input.keyboard.createCursorKeys();
+    const cursors = this.cursors;
     this.input.keyboard.on('keydown-LEFT', () => this.switchLane(-1));
+    this.input.keyboard.on('keydown-A', () => this.switchLane(-1));
     this.input.keyboard.on('keydown-RIGHT', () => this.switchLane(1));
+    this.input.keyboard.on('keydown-D', () => this.switchLane(1));
     this.input.keyboard.on('keydown-UP', () => this.subwayJump());
+    this.input.keyboard.on('keydown-W', () => this.subwayJump());
     this.input.keyboard.on('keydown-SPACE', () => this.subwayJump());
+
+    // Botones táctiles visibles para celulares y tablets
+    const btnLeft = this.add.rectangle(70, height - 45, 60, 44, 0x0f172a, 0.8).setStrokeStyle(2, 0x38bdf8).setInteractive();
+    this.add.text(70, height - 45, '◀ IZQ', { fontSize: '14px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnLeft.on('pointerdown', () => this.switchLane(-1));
+
+    const btnRight = this.add.rectangle(145, height - 45, 60, 44, 0x0f172a, 0.8).setStrokeStyle(2, 0x38bdf8).setInteractive();
+    this.add.text(145, height - 45, 'DER ▶', { fontSize: '14px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnRight.on('pointerdown', () => this.switchLane(1));
+
+    const btnJump = this.add.rectangle(width - 85, height - 45, 100, 46, 0x16a34a, 0.85).setStrokeStyle(2, 0x86efac).setInteractive();
+    this.add.text(width - 85, height - 45, 'SALTAR ⬆', { fontSize: '14px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnJump.on('pointerdown', () => this.subwayJump());
+
+    this.uiLayer.add([btnLeft, btnRight, btnJump]);
 
     // Soporte táctil por deslizamiento o toques
     this.input.on('pointerdown', (pointer) => {

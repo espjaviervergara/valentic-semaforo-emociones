@@ -50,7 +50,8 @@ class GameStateManager {
   startNewAdventure(skipTutorial = false, day = 1) {
     this.run = {
       day: day || 1,
-      mapId: skipTutorial ? (day === 1 ? 'hogar' : 'colegio') : 'cuarto',
+      mapId: (day === 1 && !skipTutorial) ? 'cuarto' : 'hogar',
+      colegioResolved: false,
       calma: 100,
       tension: 0,
       vinculos: 3,

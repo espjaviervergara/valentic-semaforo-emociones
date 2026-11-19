@@ -304,12 +304,31 @@ export class WorldScene extends Phaser.Scene {
       if (!run.elenaResolved) obj = 'Habla con mamá (Elena)';
       else obj = 'Camina a la puerta para ir al colegio';
     } else if (this.mapData.id === 'colegio') {
-      if (!run.mateoResolved) obj = 'Caso 1: Habla con Mateo en el pasillo (!)';
-      else if (!run.aulaResolved) obj = 'Caso 2: Habla con Profe Ricardo en el aula (!)';
-      else obj = 'Sal por la puerta arriba hacia el Patio';
+      const colDone = run.colegioResolved || (run.mateoResolved && run.aulaResolved);
+      if (colDone) {
+        obj = 'Sal por la puerta arriba hacia el Patio escolar';
+      } else if (day === 1) {
+        if (!run.mateoResolved) obj = 'Caso 1: Habla con Mateo en el pasillo (!)';
+        else obj = 'Caso 2: Habla con Profe Ricardo en el aula (!)';
+      } else if (day === 2) {
+        obj = 'Caso 2: Habla con Mateo en el aula sobre la maqueta (!)';
+      } else if (day === 3) {
+        obj = 'Caso 2: Aclara el rumor con Mateo en el pasillo (!)';
+      } else if (day === 4) {
+        obj = 'Caso 2: Habla con Profe Ricardo en el aula sobre el examen (!)';
+      } else if (day === 5) {
+        obj = 'Caso 2: Habla con Profe Ricardo sobre la final del festival (!)';
+      }
     } else if (this.mapData.id === 'patio') {
-      if (!run.patioResolved) obj = 'Caso 3: Habla con Mateo en la cancha (!)';
-      else obj = 'Ve a la salida (★) para terminar el día';
+      if (!run.patioResolved) {
+        if (day === 1) obj = 'Caso 3: Habla con Mateo en la cancha (!)';
+        else if (day === 2) obj = 'Caso 3: Defiende la maqueta en el patio (!)';
+        else if (day === 3) obj = 'Caso 3: Evita la riña con Mateo a la salida (!)';
+        else if (day === 4) obj = 'Caso 3: Calma la frustración en el patio (!)';
+        else if (day === 5) obj = 'Caso 3: Media en la gran final del festival (!)';
+      } else {
+        obj = 'Ve a la salida (★) para terminar el día';
+      }
     }
     this.objectiveText.setText(`Objetivo: ${obj}`);
   }
@@ -322,18 +341,29 @@ export class WorldScene extends Phaser.Scene {
       this.markers.door_hogar.badgeObj.setSymbol(run.mirrorDone ? '▸' : '🔒', run.mirrorDone ? 0x22c55e : 0x64748b);
     } else if (this.mapData.id === 'hogar') {
       this.npcSprites.elena.badgeObj.setSymbol(
-        run.elenaResolved ? (run.elenaGood ? '♥' : '!') : '!',
-        run.elenaResolved ? (run.elenaGood ? 0x22c55e : 0xef4444) : 0xfbbf24
+        run.elenaResolved ? (run.elenaGood ? '♥' : '✓') : '!',
+        run.elenaResolved ? (run.elenaGood ? 0x22c55e : 0x38bdf8) : 0xfbbf24
       );
       this.markers.door_colegio.badgeObj.setSymbol(run.elenaResolved ? '▸' : '🔒', run.elenaResolved ? 0x22c55e : 0x64748b);
     } else if (this.mapData.id === 'colegio') {
+      const day = run.day || 1;
+      const colDone = run.colegioResolved || (run.mateoResolved && run.aulaResolved);
       this.npcSprites.sofia.badgeObj.setSymbol(run.sofiaTalked ? '✓' : '?', run.sofiaTalked ? 0x22c55e : 0x38bdf8);
-      this.npcSprites.mateo.badgeObj.setSymbol(run.mateoResolved ? '✓' : '!', run.mateoResolved ? 0x22c55e : 0xfbbf24);
-      const ricardoSym = run.aulaResolved ? '✓' : (run.mateoResolved ? '!' : '?');
-      const ricardoCol = run.aulaResolved ? 0x22c55e : (run.mateoResolved ? 0xfbbf24 : 0x38bdf8);
-      this.npcSprites.ricardo.badgeObj.setSymbol(ricardoSym, ricardoCol);
-      const patioOpen = run.mateoResolved && run.aulaResolved;
-      this.markers.door_patio.badgeObj.setSymbol(patioOpen ? '▸' : '🔒', patioOpen ? 0x22c55e : 0x64748b);
+
+      if (day === 1) {
+        this.npcSprites.mateo.badgeObj.setSymbol(run.mateoResolved ? '✓' : '!', run.mateoResolved ? 0x22c55e : 0xfbbf24);
+        const ricardoSym = run.aulaResolved ? '✓' : (run.mateoResolved ? '!' : '?');
+        const ricardoCol = run.aulaResolved ? 0x22c55e : (run.mateoResolved ? 0xfbbf24 : 0x38bdf8);
+        this.npcSprites.ricardo.badgeObj.setSymbol(ricardoSym, ricardoCol);
+      } else if (day === 2 || day === 3) {
+        this.npcSprites.mateo.badgeObj.setSymbol(colDone ? '✓' : '!', colDone ? 0x22c55e : 0xfbbf24);
+        this.npcSprites.ricardo.badgeObj.setSymbol(colDone ? '✓' : '?', colDone ? 0x22c55e : 0x38bdf8);
+      } else {
+        // Días 4 y 5: Ricardo es el encounter activo del mediodía
+        this.npcSprites.ricardo.badgeObj.setSymbol(colDone ? '✓' : '!', colDone ? 0x22c55e : 0xfbbf24);
+        this.npcSprites.mateo.badgeObj.setSymbol(colDone ? '✓' : '?', colDone ? 0x22c55e : 0x38bdf8);
+      }
+      this.markers.door_patio.badgeObj.setSymbol(colDone ? '▸' : '🔒', colDone ? 0x22c55e : 0x64748b);
     } else if (this.mapData.id === 'patio') {
       this.npcSprites.sofia_patio.badgeObj.setSymbol(run.sofiaPatioTalked ? '✓' : '?', run.sofiaPatioTalked ? 0x22c55e : 0x38bdf8);
       this.npcSprites.mateo_patio.badgeObj.setSymbol(run.patioResolved ? '✓' : '!', run.patioResolved ? 0x22c55e : 0xfbbf24);
@@ -343,17 +373,37 @@ export class WorldScene extends Phaser.Scene {
 
   showInitialRoomMessage() {
     const run = gameState.run;
+    const day = run.day || 1;
+
     if (this.mapData.id === 'cuarto' && !run.backpackTaken) {
       this.showDialogue('Valentic', 'valentic', gameState.story.tutorial.welcome, 'tut_welcome');
     } else if (this.mapData.id === 'hogar' && !run.elenaResolved) {
-      this.showDialogue('Valentic', 'valentic', 'Estás en la cocina. Camina hacia mamá (!) para hablar con ella.', null);
-    } else if (this.mapData.id === 'colegio' && !run.mateoResolved) {
-      const msg = run.shadowFollowing
-        ? '¡Cuidado! La Sombra te siguió desde casa. Saluda a Sofía (?) y habla con Mateo (!).'
-        : 'Llegaste al colegio. Tienes dos retos aquí: primero con Mateo (!) en el pasillo y luego en el aula.';
-      this.showDialogue('Valentic', 'valentic', msg, null);
+      const msgs = {
+        1: 'Estás en casa (Mañana). Habla con mamá Elena (!) sobre la prisa matutina.',
+        2: 'Día 2 (Mañana en casa). Habla con mamá Elena (!) sobre los materiales de la maqueta.',
+        3: 'Día 3 (Mañana en casa). Habla con mamá Elena (!) sobre los mensajes que viste en tu celular.',
+        4: 'Día 4 (Mañana en casa). Habla con mamá Elena (!) sobre la presión del examen.',
+        5: 'Día 5 (Mañana en casa). Habla con mamá Elena (!) antes de salir al gran Festival.',
+      };
+      this.showDialogue('Valentic', 'valentic', msgs[day] || msgs[1], null);
+    } else if (this.mapData.id === 'colegio' && !run.colegioResolved && (!run.mateoResolved || !run.aulaResolved)) {
+      const msgs = {
+        1: 'Llegaste al colegio (Mediodía). Tienes dos retos: primero con Mateo (!) en el pasillo y luego con Profe Ricardo (!) en el aula.',
+        2: 'Llegaste al colegio (Mediodía). Habla con Mateo (!) en el aula sobre el proyecto de ciencias.',
+        3: 'Llegaste al colegio (Mediodía). Habla con tus compañeros (!) en el comedor para aclarar el rumor.',
+        4: 'Llegaste al aula de examen (Mediodía). Habla con el Profe Ricardo (!) para calmar tu mente.',
+        5: '¡Pasillos del Festival! Habla con Sofía y Mateo (!) para coordinar a las barras en paz.',
+      };
+      this.showDialogue('Valentic', 'valentic', msgs[day] || msgs[1], null);
     } else if (this.mapData.id === 'patio' && !run.patioResolved) {
-      this.showDialogue('Valentic', 'valentic', 'Saliste al patio de recreo. Acércate a Mateo en la cancha (!) para el último reto.', null);
+      const msgs = {
+        1: 'Saliste a la cancha escolar (Tarde). Acércate a Mateo (!) en el partido de básquet.',
+        2: 'Patio escolar al salir (Tarde). Defiende tu maqueta reparada frente a las burlas (!) de Mateo.',
+        3: 'Salida del colegio (Tarde). Habla con Mateo (!) frente a la provocación de riña.',
+        4: 'Patio escolar al salir (Tarde). Calma la frustración de tus compañeros (!) y evita vandalismo.',
+        5: '¡Gran Final del Festival! (Tarde). Media en la discusión masiva de la cancha (!) y recibe tu graduación.',
+      };
+      this.showDialogue('Valentic', 'valentic', msgs[day] || msgs[1], null);
     }
   }
 
@@ -444,9 +494,9 @@ export class WorldScene extends Phaser.Scene {
   isDoorUnlocked(doorId) {
     const run = gameState.run;
     if (doorId === 'door_hogar') return run.mirrorDone;
-    if (doorId === 'door_colegio') return run.elenaResolved;
-    if (doorId === 'door_patio') return run.mateoResolved && run.aulaResolved;
-    if (doorId === 'door_finish') return run.patioResolved;
+    if (doorId === 'door_colegio') return Boolean(run.elenaResolved);
+    if (doorId === 'door_patio') return Boolean(run.colegioResolved || (run.mateoResolved && run.aulaResolved));
+    if (doorId === 'door_finish') return Boolean(run.patioResolved);
     return false;
   }
 
@@ -465,106 +515,11 @@ export class WorldScene extends Phaser.Scene {
 
   triggerInteract(item) {
     const run = gameState.run;
+    const day = run.day || 1;
     this.walkTarget = null;
     this.destMarker.setVisible(false);
 
-    // Rutas específicas para los Días 2 a 5
-    if (run.day === 2) {
-      if (item.id === 'elena') {
-        this.showDialogue('Elena (Mamá)', 'portrait_elena', '¡Buenos días, Alex! Que te vaya excelente hoy en el colegio presentando tu proyecto de ciencias con Mateo y Sofía.', null);
-        return;
-      }
-      if (item.id === 'mateo') {
-        if (run.mateoResolved) {
-          this.showDialogue('Mateo', 'portrait_mateo', '¡Menos mal logramos arreglar la maqueta con pegamento! Ve al patio y luego a la salida.', null);
-          return;
-        }
-        this.startEncounter('dia2_ciencia', (isGood) => {
-          run.mateoResolved = true;
-          run.mateoGood = isGood;
-          this.refreshBadges();
-          this.refreshHud();
-          const out = gameState.story.encounters.dia2_ciencia.outcome;
-          this.showDialogue(
-            isGood ? 'Mateo' : 'Valentic',
-            isGood ? 'portrait_mateo' : 'valentic',
-            isGood ? out.goodMapLine : out.badMapLine,
-            null
-          );
-        });
-        return;
-      }
-    }
-
-    if (run.day === 3) {
-      if (item.id === 'mateo') {
-        if (run.mateoResolved) {
-          this.showDialogue('Mateo', 'portrait_mateo', 'Me alegra que hayamos hablado con la verdad sobre ese chisme. ¡Ve a la salida del patio!', null);
-          return;
-        }
-        this.startEncounter('dia3_cafeteria', (isGood) => {
-          run.mateoResolved = true;
-          run.mateoGood = isGood;
-          this.refreshBadges();
-          this.refreshHud();
-          const out = gameState.story.encounters.dia3_cafeteria.outcome;
-          this.showDialogue(
-            isGood ? 'Mateo' : 'Valentic',
-            isGood ? 'portrait_mateo' : 'valentic',
-            isGood ? out.goodMapLine : out.badMapLine,
-            null
-          );
-        });
-        return;
-      }
-    }
-
-    if (run.day === 4) {
-      if (item.id === 'ricardo') {
-        if (run.aulaResolved) {
-          this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Felicitaciones por superar ese bloqueo con calma, Alex! Ya puedes salir al patio para terminar.', null);
-          return;
-        }
-        this.startEncounter('dia4_examen', (isGood) => {
-          run.aulaResolved = true;
-          run.aulaGood = isGood;
-          this.refreshBadges();
-          this.refreshHud();
-          const out = gameState.story.encounters.dia4_examen.outcome;
-          this.showDialogue(
-            isGood ? 'Profe Ricardo' : 'Valentic',
-            isGood ? 'portrait_ricardo' : 'valentic',
-            isGood ? out.goodMapLine : out.badMapLine,
-            null
-          );
-        });
-        return;
-      }
-    }
-
-    if (run.day === 5) {
-      if (item.id === 'mateo_patio') {
-        if (run.patioResolved) {
-          this.showDialogue('Mateo', 'portrait_mateo', '¡Eres un verdadero mediador, Alex! Ve a la salida para la ceremonia de graduación (★).', null);
-          return;
-        }
-        this.startEncounter('dia5_festival', (isGood) => {
-          run.patioResolved = true;
-          run.patioGood = isGood;
-          this.refreshBadges();
-          this.refreshHud();
-          const out = gameState.story.encounters.dia5_festival.outcome;
-          this.showDialogue(
-            isGood ? 'Mateo' : 'Valentic',
-            isGood ? 'portrait_mateo' : 'valentic',
-            isGood ? out.goodMapLine : out.badMapLine,
-            null
-          );
-        });
-        return;
-      }
-    }
-
+    // 1. Tutorial en el Cuarto (Día 1)
     if (item.id === 'backpack') {
       if (run.backpackTaken) {
         this.showDialogue('Valentic', 'valentic', 'Ya llevas tu mochila lista. ¡Ahora ve al espejo!', null);
@@ -603,27 +558,32 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
 
+    // 2. ESCENARIO 1: HOGAR (La Mañana en Casa) · Mamá Elena
     if (item.id === 'elena') {
       if (run.elenaResolved) {
         const msg = run.elenaGood
-          ? gameState.story.encounters.hogar_elena.outcome.goodMapLine
-          : 'Ya pasaste este momento. Ve por la puerta abajo a la derecha hacia el colegio.';
+          ? 'Hablamos con calma esta mañana. ¡Ve por la puerta hacia el colegio!'
+          : 'Ya pasamos este momento. Ve por la puerta abajo a la derecha hacia el colegio.';
         this.showDialogue('Elena (Mamá)', 'portrait_elena', msg, null);
         return;
       }
-      this.startEncounter('hogar_elena', (isGood) => {
+
+      const encMap = { 1: 'hogar_elena', 2: 'dia2_hogar', 3: 'dia3_hogar', 4: 'dia4_hogar', 5: 'dia5_hogar' };
+      const encKey = encMap[day] || 'hogar_elena';
+
+      this.startEncounter(encKey, (isGood) => {
         run.elenaResolved = true;
         run.elenaGood = isGood;
         run.shadowFollowing = !isGood;
         this.shadowFollower.setVisible(run.shadowFollowing);
         this.refreshBadges();
         this.refreshHud();
-        const out = gameState.story.encounters.hogar_elena.outcome;
+        const out = gameState.story.encounters[encKey].outcome;
         this.showDialogue(
           isGood ? 'Elena (Mamá)' : 'Valentic',
           isGood ? 'portrait_elena' : 'valentic',
           isGood ? out.goodMapLine : out.badMapLine,
-          isGood ? 'hogar_elena_good' : 'hogar_elena_bad'
+          null
         );
       });
       return;
@@ -632,7 +592,7 @@ export class WorldScene extends Phaser.Scene {
     if (item.id === 'door_colegio') {
       if (!run.elenaResolved) {
         soundManager.playError();
-        this.showDialogue('Valentic', 'valentic', 'Antes de ir al colegio, habla con mamá (!).', null);
+        this.showDialogue('Valentic', 'valentic', 'Antes de ir al colegio, habla con mamá Elena (!).', null);
         return;
       }
       soundManager.playClick();
@@ -641,6 +601,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
 
+    // 3. ESCENARIO 2: COLEGIO (El Mediodía) · Compañeros y Profesores
     if (item.id === 'sofia') {
       const sData = gameState.story.npcs.sofia;
       if (!run.sofiaTalked) {
@@ -656,61 +617,175 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
 
-    if (item.id === 'ricardo') {
-      if (!run.mateoResolved) {
-        const rData = gameState.story.npcs.ricardo;
-        run.ricardoTalked = true;
-        this.refreshBadges();
-        this.showDialogue('Profe Ricardo', 'portrait_ricardo', rData.greeting, 'npc_ricardo');
-        return;
-      }
-      if (!run.aulaResolved) {
-        this.startEncounter('colegio_aula', (isGood) => {
-          run.aulaResolved = true;
-          run.aulaGood = isGood;
+    if (item.id === 'mateo') {
+      if (day === 1) {
+        if (run.mateoResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', 'Ya resolviste este choque. Ahora entra al aula para hablar con el Profe Ricardo (!).', null);
+          return;
+        }
+        this.startEncounter('colegio_mateo', (isGood) => {
+          run.mateoResolved = true;
+          run.mateoGood = isGood;
+          if (isGood) run.shadowFollowing = false;
+          this.shadowFollower.setVisible(run.shadowFollowing);
           this.refreshBadges();
           this.refreshHud();
-          const out = gameState.story.encounters.colegio_aula.outcome;
+          const out = gameState.story.encounters.colegio_mateo.outcome;
           this.showDialogue(
-            isGood ? 'Profe Ricardo' : 'Valentic',
-            isGood ? 'portrait_ricardo' : 'valentic',
+            isGood ? 'Mateo' : 'Valentic',
+            isGood ? 'portrait_mateo' : 'valentic',
             isGood ? out.goodMapLine : out.badMapLine,
-            isGood ? 'colegio_aula_good' : 'colegio_aula_bad'
+            isGood ? 'colegio_mateo_good' : 'colegio_mateo_bad'
           );
         });
         return;
       }
-      this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Buen trabajo! Ya puedes salir por la puerta hacia el Patio.', null);
-      return;
-    }
 
-    if (item.id === 'mateo') {
-      if (run.mateoResolved) {
-        this.showDialogue('Mateo', 'portrait_mateo', 'Ya resolviste este choque. Ahora entra al aula para hablar con el Profe Ricardo (!).', null);
+      // Días 2 y 3 (Ciencias y Cafetería)
+      const encMidMap = { 2: 'dia2_ciencia', 3: 'dia3_cafeteria' };
+      const encKey = encMidMap[day];
+      if (encKey) {
+        if (run.colegioResolved || run.mateoResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Todo aclarado! Sal por la puerta arriba hacia el Patio escolar.', null);
+          return;
+        }
+        this.startEncounter(encKey, (isGood) => {
+          run.mateoResolved = true;
+          run.colegioResolved = true;
+          run.aulaResolved = true;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters[encKey].outcome;
+          this.showDialogue(
+            isGood ? 'Mateo' : 'Valentic',
+            isGood ? 'portrait_mateo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
         return;
       }
-      this.startEncounter('colegio_mateo', (isGood) => {
-        run.mateoResolved = true;
-        run.mateoGood = isGood;
-        if (isGood) run.shadowFollowing = false;
-        this.shadowFollower.setVisible(run.shadowFollowing);
-        this.refreshBadges();
-        this.refreshHud();
-        const out = gameState.story.encounters.colegio_mateo.outcome;
-        this.showDialogue(
-          isGood ? 'Mateo' : 'Valentic',
-          isGood ? 'portrait_mateo' : 'valentic',
-          isGood ? out.goodMapLine : out.badMapLine,
-          isGood ? 'colegio_mateo_good' : 'colegio_mateo_bad'
-        );
-      });
+
+      if (day === 4) {
+        if (!run.colegioResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Uff, qué nervios con el examen de hoy, Alex! El Profe Ricardo nos está esperando adentro en el aula (!).', null);
+        } else {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Gran serenidad en el examen, Alex! Salgamos al patio escolar por la puerta arriba.', null);
+        }
+        return;
+      }
+
+      if (day === 5) {
+        if (!run.colegioResolved) {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Hoy es la gran final del Festival! El Profe Ricardo está dando las pautas de convivencia en el aula (!).', null);
+        } else {
+          this.showDialogue('Mateo', 'portrait_mateo', '¡Todo listo para la final en la cancha! Vamos al patio escolar por la puerta arriba.', null);
+        }
+        return;
+      }
+    }
+
+    if (item.id === 'ricardo') {
+      if (day === 1) {
+        if (!run.mateoResolved) {
+          const rData = gameState.story.npcs.ricardo;
+          run.ricardoTalked = true;
+          this.refreshBadges();
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', rData.greeting, 'npc_ricardo');
+          return;
+        }
+        if (!run.aulaResolved) {
+          this.startEncounter('colegio_aula', (isGood) => {
+            run.aulaResolved = true;
+            run.aulaGood = isGood;
+            run.colegioResolved = true;
+            this.refreshBadges();
+            this.refreshHud();
+            const out = gameState.story.encounters.colegio_aula.outcome;
+            this.showDialogue(
+              isGood ? 'Profe Ricardo' : 'Valentic',
+              isGood ? 'portrait_ricardo' : 'valentic',
+              isGood ? out.goodMapLine : out.badMapLine,
+              isGood ? 'colegio_aula_good' : 'colegio_aula_bad'
+            );
+          });
+          return;
+        }
+        this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Buen trabajo! Ya puedes salir por la puerta hacia el Patio.', null);
+        return;
+      }
+
+      if (day === 2) {
+        if (!run.colegioResolved) {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', 'Buenos días, Alex. Revisa con Mateo en el salón (!) los detalles de la maqueta.', null);
+        } else {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Excelente resolución en equipo! Ya pueden salir al patio por la puerta arriba.', null);
+        }
+        return;
+      }
+
+      if (day === 3) {
+        if (!run.colegioResolved) {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', 'Hola Alex. Ve a conversar con Mateo en el pasillo (!) para aclarar con calma lo sucedido.', null);
+        } else {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', 'Me alegra que hayan dialogado con serenidad. Sal por la puerta arriba hacia el patio.', null);
+        }
+        return;
+      }
+
+      if (day === 4) {
+        if (run.aulaResolved || run.colegioResolved) {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Superaste el examen con gran serenidad, Alex! Sal al patio por la puerta arriba.', null);
+          return;
+        }
+        this.startEncounter('dia4_examen', (isGood) => {
+          run.aulaResolved = true;
+          run.colegioResolved = true;
+          run.mateoResolved = true;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.dia4_examen.outcome;
+          this.showDialogue(
+            isGood ? 'Profe Ricardo' : 'Valentic',
+            isGood ? 'portrait_ricardo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
+        return;
+      }
+
+      if (day === 5) {
+        if (run.colegioResolved) {
+          this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Todo listo para la gran final en la cancha! Sal al patio por la puerta arriba.', null);
+          return;
+        }
+        this.startEncounter('dia5_colegio', (isGood) => {
+          run.colegioResolved = true;
+          run.aulaResolved = true;
+          run.mateoResolved = true;
+          this.refreshBadges();
+          this.refreshHud();
+          const out = gameState.story.encounters.dia5_colegio.outcome;
+          this.showDialogue(
+            isGood ? 'Profe Ricardo' : 'Valentic',
+            isGood ? 'portrait_ricardo' : 'valentic',
+            isGood ? out.goodMapLine : out.badMapLine,
+            null
+          );
+        });
+        return;
+      }
+
+      this.showDialogue('Profe Ricardo', 'portrait_ricardo', '¡Hola Alex! Continúa con tu jornada escolar.', null);
       return;
     }
 
     if (item.id === 'door_patio') {
-      if (!run.mateoResolved || !run.aulaResolved) {
+      const colDone = run.colegioResolved || (run.mateoResolved && run.aulaResolved);
+      if (!colDone) {
         soundManager.playError();
-        this.showDialogue('Valentic', 'valentic', 'Primero resuelve los casos del pasillo y del aula (!).', null);
+        this.showDialogue('Valentic', 'valentic', 'Primero resuelve los retos de este salón/pasillo (!).', null);
         return;
       }
       soundManager.playClick();
@@ -719,6 +794,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
 
+    // 4. ESCENARIO 3: PATIO (La Tarde / Al salir del colegio)
     if (item.id === 'sofia_patio') {
       run.sofiaPatioTalked = true;
       this.refreshBadges();
@@ -728,39 +804,41 @@ export class WorldScene extends Phaser.Scene {
 
     if (item.id === 'mateo_patio') {
       if (run.patioResolved) {
-        this.showDialogue('Mateo', 'portrait_mateo', 'Ya terminaron el partido. ¡Ve a la salida (★)!', null);
+        this.showDialogue('Mateo', 'portrait_mateo', '¡Todo resuelto por hoy! Ve a la salida de la derecha (★).', null);
         return;
       }
-      this.startEncounter('colegio_patio', (isGood) => {
+
+      const encPatioMap = {
+        1: 'colegio_patio',
+        2: 'dia2_patio',
+        3: 'dia3_patio',
+        4: 'dia4_patio',
+        5: 'dia5_festival',
+      };
+      const encKey = encPatioMap[day] || 'colegio_patio';
+
+      this.startEncounter(encKey, (isGood) => {
         run.patioResolved = true;
         run.patioGood = isGood;
         if (isGood) run.shadowFollowing = false;
         this.shadowFollower.setVisible(run.shadowFollowing);
         this.refreshBadges();
         this.refreshHud();
-        const out = gameState.story.encounters.colegio_patio.outcome;
+        const out = gameState.story.encounters[encKey].outcome;
         this.showDialogue(
           isGood ? 'Mateo' : 'Valentic',
           isGood ? 'portrait_mateo' : 'valentic',
           isGood ? out.goodMapLine : out.badMapLine,
-          isGood ? 'colegio_patio_good' : 'colegio_patio_bad'
+          day === 1 ? (isGood ? 'colegio_patio_good' : 'colegio_patio_bad') : null
         );
       });
       return;
     }
 
     if (item.id === 'door_finish') {
-      const day = run.day || 1;
-      let canFinish = false;
-      if (day === 1) canFinish = run.patioResolved;
-      else if (day === 2) canFinish = run.mateoResolved;
-      else if (day === 3) canFinish = run.mateoResolved;
-      else if (day === 4) canFinish = run.aulaResolved;
-      else if (day === 5) canFinish = run.patioResolved;
-
-      if (!canFinish) {
+      if (!run.patioResolved) {
         soundManager.playError();
-        this.showDialogue('Valentic', 'valentic', 'Primero resuelve el reto emocional de este día (!).', null);
+        this.showDialogue('Valentic', 'valentic', 'Primero resuelve el reto emocional de la tarde con Mateo (!).', null);
         return;
       }
       soundManager.stopVoice();
