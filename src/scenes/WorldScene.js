@@ -14,7 +14,12 @@ export class WorldScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
     soundManager.attach(this);
-    this.events.once('shutdown', () => soundManager.stopVoice());
+    this.events.once('shutdown', () => {
+      soundManager.stopVoice();
+      this.input.removeAllListeners();
+    });
+
+    this.isTransitioning = false;
 
     if (!gameState.run) {
       gameState.startNewAdventure(false);
@@ -290,6 +295,8 @@ export class WorldScene extends Phaser.Scene {
 
   refreshHud() {
     const run = gameState.run;
+    const day = run.day || 1;
+    if (this.dayBadge) this.dayBadge.setText(`Día ${day}`);
     this.calmaText.setText(`Calma: ${run.calma}%`);
     this.calmaBar.width = Math.max(2, (run.calma / 100) * 108);
     this.calmaBar.fillColor = run.calma >= 60 ? 0x22c55e : run.calma >= 35 ? 0xf59e0b : 0xef4444;
@@ -501,6 +508,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   checkAutoDoor() {
+    if (this.isTransitioning || this.activeModal || this.dialogueOpen) return false;
     for (const obj of Object.values(this.markers)) {
       if (obj.type !== 'door') continue;
       if (!this.isDoorUnlocked(obj.id)) continue;
@@ -552,6 +560,11 @@ export class WorldScene extends Phaser.Scene {
         this.showDialogue('Valentic', 'valentic', gameState.story.tutorial.doorHint, 'tut_door_hint');
         return;
       }
+      if (this.isTransitioning) return;
+      this.isTransitioning = true;
+      this.walkTarget = null;
+      this.destMarker.setVisible(false);
+      soundManager.stopVoice();
       soundManager.playClick();
       run.mapId = 'hogar';
       this.scene.restart();
@@ -595,6 +608,11 @@ export class WorldScene extends Phaser.Scene {
         this.showDialogue('Valentic', 'valentic', 'Antes de ir al colegio, habla con mamá Elena (!).', null);
         return;
       }
+      if (this.isTransitioning) return;
+      this.isTransitioning = true;
+      this.walkTarget = null;
+      this.destMarker.setVisible(false);
+      soundManager.stopVoice();
       soundManager.playClick();
       run.mapId = 'colegio';
       this.scene.restart();
@@ -788,6 +806,11 @@ export class WorldScene extends Phaser.Scene {
         this.showDialogue('Valentic', 'valentic', 'Primero resuelve los retos de este salón/pasillo (!).', null);
         return;
       }
+      if (this.isTransitioning) return;
+      this.isTransitioning = true;
+      this.walkTarget = null;
+      this.destMarker.setVisible(false);
+      soundManager.stopVoice();
       soundManager.playClick();
       run.mapId = 'patio';
       this.scene.restart();
@@ -841,6 +864,10 @@ export class WorldScene extends Phaser.Scene {
         this.showDialogue('Valentic', 'valentic', 'Primero resuelve el reto emocional de la tarde con Mateo (!).', null);
         return;
       }
+      if (this.isTransitioning) return;
+      this.isTransitioning = true;
+      this.walkTarget = null;
+      this.destMarker.setVisible(false);
       soundManager.stopVoice();
       this.scene.start('VictoryScene');
       return;
