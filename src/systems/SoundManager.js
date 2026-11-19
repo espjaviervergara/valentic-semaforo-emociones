@@ -107,6 +107,13 @@ class SoundManager {
 
   ensureCtx() {
     if (gameState.save.settings.muted) return null;
+    const ctx = this.phaserSound?.context || this.ctx;
+    if (ctx) {
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+      return ctx;
+    }
     if (!this.ctx) {
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if (Ctx) this.ctx = new Ctx();
