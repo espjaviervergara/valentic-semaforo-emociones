@@ -303,7 +303,7 @@ export class MenuScene extends Phaser.Scene {
       lineSpacing: 6,
     }).setOrigin(0.5));
 
-    modal.add(this.add.text(width / 2, 320, `💡 ${curPage.tip}`, {
+    modal.add(this.add.text(width / 2, 316, `💡 ${curPage.tip}`, {
       fontFamily: 'Trebuchet MS, sans-serif',
       fontSize: '15px',
       fontStyle: 'bold',
@@ -311,6 +311,14 @@ export class MenuScene extends Phaser.Scene {
       align: 'center',
       wordWrap: { width: 620 },
     }).setOrigin(0.5));
+
+    modal.add(createButton(this, width / 2, 362, 190, 32, '🔊 Escuchar Página', {
+      fill: 0x0f766e,
+      hover: 0x0d9488,
+      border: 0x99f6e4,
+      fontSize: '13px',
+      onClick: () => soundManager.playVoice(`diary_p${pageIndex}`),
+    }));
 
     // Botones de Anterior y Siguiente Página
     if (pageIndex > 1) {

@@ -583,7 +583,7 @@ export class WorldScene extends Phaser.Scene {
           isGood ? 'Elena (Mamá)' : 'Valentic',
           isGood ? 'portrait_elena' : 'valentic',
           isGood ? out.goodMapLine : out.badMapLine,
-          null
+          isGood ? `${encKey}_good` : `${encKey}_bad`
         );
       });
       return;
@@ -660,7 +660,7 @@ export class WorldScene extends Phaser.Scene {
             isGood ? 'Mateo' : 'Valentic',
             isGood ? 'portrait_mateo' : 'valentic',
             isGood ? out.goodMapLine : out.badMapLine,
-            null
+            isGood ? `${encKey}_good` : `${encKey}_bad`
           );
         });
         return;
@@ -749,7 +749,7 @@ export class WorldScene extends Phaser.Scene {
             isGood ? 'Profe Ricardo' : 'Valentic',
             isGood ? 'portrait_ricardo' : 'valentic',
             isGood ? out.goodMapLine : out.badMapLine,
-            null
+            isGood ? 'dia4_examen_good' : 'dia4_examen_bad'
           );
         });
         return;
@@ -771,7 +771,7 @@ export class WorldScene extends Phaser.Scene {
             isGood ? 'Profe Ricardo' : 'Valentic',
             isGood ? 'portrait_ricardo' : 'valentic',
             isGood ? out.goodMapLine : out.badMapLine,
-            null
+            isGood ? 'dia5_colegio_good' : 'dia5_colegio_bad'
           );
         });
         return;
@@ -829,7 +829,7 @@ export class WorldScene extends Phaser.Scene {
           isGood ? 'Mateo' : 'Valentic',
           isGood ? 'portrait_mateo' : 'valentic',
           isGood ? out.goodMapLine : out.badMapLine,
-          day === 1 ? (isGood ? 'colegio_patio_good' : 'colegio_patio_bad') : null
+          isGood ? `${encKey}_good` : `${encKey}_bad`
         );
       });
       return;

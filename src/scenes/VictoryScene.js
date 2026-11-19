@@ -76,7 +76,9 @@ export class VictoryScene extends Phaser.Scene {
       wordWrap: { width: 420 },
     }).setOrigin(0.5);
 
-    this.time.delayedCall(500, () => soundManager.playVoice('valentic_victory'));
+    this.time.delayedCall(400, () => {
+      soundManager.playVoice(`diary_p${currentDay}`);
+    });
 
     // Botones de acción
     if (currentDay < 5) {
