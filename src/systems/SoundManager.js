@@ -2,92 +2,211 @@ import { gameState } from './GameState.js';
 
 const BGM_VOL = 0.14;
 const BGM_DUCK = 0.04;
+const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
 
 class SoundManager {
   constructor() {
     this.ctx = null;
     this.phaserSound = null;
     this.cacheAudio = null;
+
+    // BGM state (reproducción HTML5 para eludir el interruptor de silencio de iOS WebKit y evitar saturación de decodificadores)
     this.bgmKey = null;
-    this.bgm = null;
+    this.bgmAudio = null;
+    this.pendingBgmKey = null;
+
+    // Voice state
     this.voiceKey = null;
-    this.voice = null;
+    this.voiceAudio = null;
+
+    // Estado de desbloqueo
+    this.isUnlocked = false;
     this._unlockRegistered = false;
+
+    if (typeof window !== 'undefined') {
+      this.ensureUnlockListeners();
+    }
   }
 
   attach(scene) {
     if (!scene) return;
     this.phaserSound = scene.sound;
     this.cacheAudio = scene.cache?.audio;
+    this.ensureUnlockListeners();
     this.syncVolumes();
-    this.ensureUnlock();
   }
 
-  ensureUnlock() {
+  ensureUnlockListeners() {
     if (this._unlockRegistered || typeof window === 'undefined') return;
     this._unlockRegistered = true;
-    const unlock = () => {
-      this.ensureCtx();
-      if (this.phaserSound && this.phaserSound.locked) {
-        try { this.phaserSound.unlock(); } catch (e) {}
-      }
-      if (this.bgm && !this.bgm.isPlaying && !gameState.save.settings.muted) {
-        try { this.bgm.play({ loop: true, volume: BGM_VOL }); } catch (e) {}
-      }
+
+    const onUserGesture = () => {
+      this.unlockAll();
     };
-    ['pointerdown', 'touchstart', 'touchend', 'click'].forEach((evt) => {
-      window.addEventListener(evt, unlock, { passive: true });
+
+    ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach((evt) => {
+      window.addEventListener(evt, onUserGesture, { capture: true, passive: true });
     });
+    if (typeof document !== 'undefined' && document.body) {
+      ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach((evt) => {
+        document.body.addEventListener(evt, onUserGesture, { capture: true, passive: true });
+      });
+    }
+  }
+
+  unlockAll() {
+    // 1. Silent HTML5 Audio Element playback:
+    // Eleva la sesión AVAudioSession en iOS WebKit a AVAudioSessionCategoryPlayback (ignora interruptor de silencio de iPhone)
+    try {
+      const silentAudio = document.createElement('audio');
+      silentAudio.setAttribute('playsinline', 'true');
+      silentAudio.setAttribute('webkit-playsinline', 'true');
+      silentAudio.preload = 'auto';
+      silentAudio.src = SILENT_WAV;
+      silentAudio.volume = 0.001;
+      const p = silentAudio.play();
+      if (p !== undefined) {
+        p.then(() => {
+          silentAudio.pause();
+          silentAudio.remove();
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
+    // 2. WebAudio Context Resume + Silent Buffer Kickstart
+    const ctx = this.ensureCtx();
+    if (ctx) {
+      try {
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        const buffer = ctx.createBuffer(1, 1, 22050);
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(ctx.destination);
+        source.start(0);
+      } catch (e) {}
+    }
+
+    // 3. Desbloqueo interno de Phaser Sound Manager
+    if (this.phaserSound) {
+      try {
+        this.phaserSound.locked = false;
+        this.phaserSound.unlocked = true;
+        if (this.phaserSound.context && this.phaserSound.context.state === 'suspended') {
+          this.phaserSound.context.resume().catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    this.isUnlocked = true;
+
+    // 4. Iniciar BGM pendiente si estaba encolada antes del primer toque
+    if (this.pendingBgmKey) {
+      const key = this.pendingBgmKey;
+      this.pendingBgmKey = null;
+      this.playBGM(key);
+    } else if (this.bgmAudio && this.bgmAudio.paused && !gameState.save.settings.muted) {
+      this.bgmAudio.play().catch(() => {});
+    }
   }
 
   syncVolumes() {
     const muted = gameState.save.settings.muted;
     const voiceOn = gameState.save.settings.voiceEnabled;
-    if (this.bgm) {
+
+    if (this.bgmAudio) {
       if (muted) {
-        this.bgm.setVolume(0);
+        this.bgmAudio.volume = 0;
       } else {
-        const speaking = Boolean(this.voice && this.voice.isPlaying);
-        this.bgm.setVolume(speaking ? BGM_DUCK : BGM_VOL);
+        const speaking = Boolean(this.voiceAudio && !this.voiceAudio.paused && !this.voiceAudio.ended);
+        this.bgmAudio.volume = speaking ? BGM_DUCK : BGM_VOL;
       }
     }
-    if (this.voice && (muted || !voiceOn)) {
+
+    if (this.voiceAudio && (muted || !voiceOn)) {
       this.stopVoice();
     }
   }
 
   playBGM(key) {
-    if (!this.phaserSound || !this.cacheAudio?.exists(key)) return;
-    this.ensureCtx();
-    if (this.phaserSound.locked) {
-      try { this.phaserSound.unlock(); } catch (e) {}
-    }
-    if (this.bgmKey === key && this.bgm) {
-      if (!this.bgm.isPlaying) {
-        this.bgm.play({ loop: true, volume: gameState.save.settings.muted ? 0 : BGM_VOL });
+    if (!key) return;
+
+    // Si ya está reproduciendo la misma pista, solo ajustar volumen
+    if (this.bgmKey === key && this.bgmAudio) {
+      if (this.bgmAudio.paused && !gameState.save.settings.muted) {
+        this.bgmAudio.play().catch(() => {
+          this.pendingBgmKey = key;
+        });
       }
       this.syncVolumes();
       return;
     }
-    if (this.bgm) {
-      this.bgm.stop();
-      this.bgm.destroy();
-      this.bgm = null;
-    }
+
+    this.stopBGM();
     this.bgmKey = key;
-    this.bgm = this.phaserSound.add(key, {
-      loop: true,
-      volume: gameState.save.settings.muted ? 0 : BGM_VOL,
-    });
-    this.bgm.play();
+
+    const audio = new Audio();
+    audio.setAttribute('playsinline', 'true');
+    audio.setAttribute('webkit-playsinline', 'true');
+    audio.loop = true;
+    audio.preload = 'auto';
+
+    const speaking = Boolean(this.voiceAudio && !this.voiceAudio.paused && !this.voiceAudio.ended);
+    audio.volume = gameState.save.settings.muted ? 0 : (speaking ? BGM_DUCK : BGM_VOL);
+
+    // Múltiples fuentes con fallback automático
+    const sources = [
+      `./assets/audio/bgm/${key}.mp3`,
+      `./assets/audio/bgm/${key}.m4a`,
+      `./assets/audio/bgm/${key}.wav`,
+    ];
+    let srcIdx = 0;
+    audio.src = sources[srcIdx];
+
+    audio.onerror = () => {
+      srcIdx++;
+      if (srcIdx < sources.length) {
+        audio.src = sources[srcIdx];
+        if (!audio.paused) {
+          audio.play().catch(() => {});
+        }
+      }
+    };
+
+    this.bgmAudio = audio;
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Bloqueado temporalmente por política de autoplay antes de interacción del usuario
+        this.pendingBgmKey = key;
+      });
+    }
+  }
+
+  stopBGM() {
+    if (this.bgmAudio) {
+      try {
+        this.bgmAudio.pause();
+        this.bgmAudio.currentTime = 0;
+        this.bgmAudio.onerror = null;
+        this.bgmAudio.src = '';
+      } catch (e) {}
+      this.bgmAudio = null;
+    }
   }
 
   stopVoice() {
-    if (this.voice) {
-      this.voice.off('complete');
-      if (this.voice.isPlaying) this.voice.stop();
-      this.voice.destroy();
-      this.voice = null;
+    if (this.voiceAudio) {
+      try {
+        this.voiceAudio.pause();
+        this.voiceAudio.currentTime = 0;
+        this.voiceAudio.onended = null;
+        this.voiceAudio.onerror = null;
+        this.voiceAudio.src = '';
+      } catch (e) {}
+      this.voiceAudio = null;
     }
     this.syncVolumes();
   }
@@ -103,34 +222,64 @@ class SoundManager {
     if (
       gameState.save.settings.muted
       || !gameState.save.settings.voiceEnabled
-      || !this.phaserSound
-      || !this.cacheAudio?.exists(key)
     ) {
       if (onComplete) onComplete();
       return;
     }
 
-    this.ensureCtx();
-    if (this.phaserSound.locked) {
-      try { this.phaserSound.unlock(); } catch (e) {}
-    }
+    const audio = new Audio();
+    audio.setAttribute('playsinline', 'true');
+    audio.setAttribute('webkit-playsinline', 'true');
+    audio.preload = 'auto';
+    audio.volume = 0.95;
 
-    const v = this.phaserSound.add(key, { volume: 0.95 });
-    this.voice = v;
-    this.syncVolumes();
-    v.once('complete', () => {
-      if (this.voice === v) {
-        this.voice = null;
-        v.destroy();
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      if (this.voiceAudio === audio) {
+        this.voiceAudio = null;
         this.syncVolumes();
       }
       if (onComplete) onComplete();
-    });
-    v.play();
+    };
+
+    audio.onended = finish;
+
+    // Fallback: MP3 primero, luego M4A
+    const sources = [
+      `./assets/audio/voices/${key}.mp3`,
+      `./assets/audio/voices/${key}.m4a`,
+    ];
+    let srcIdx = 0;
+    audio.src = sources[srcIdx];
+
+    audio.onerror = () => {
+      srcIdx++;
+      if (srcIdx < sources.length) {
+        audio.src = sources[srcIdx];
+        audio.play().catch(() => finish());
+      } else {
+        finish();
+      }
+    };
+
+    this.voiceAudio = audio;
+    this.syncVolumes(); // Atenúa BGM mientras habla el personaje
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn(`Voz en cola o bloqueada para ${key}:`, err);
+        finish();
+      });
+    }
   }
 
   replayVoice() {
-    if (this.voiceKey) this.playVoice(this.voiceKey);
+    if (this.voiceKey) {
+      this.playVoice(this.voiceKey);
+    }
   }
 
   ensureCtx() {
@@ -142,7 +291,7 @@ class SoundManager {
       }
       return ctx;
     }
-    if (!this.ctx) {
+    if (!this.ctx && typeof window !== 'undefined') {
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if (Ctx) this.ctx = new Ctx();
     }
@@ -179,7 +328,7 @@ class SoundManager {
   playStep() { this.tone(150, 0.03, 'sine', 0.02); }
   playVictory() { [523, 659, 784, 1046].forEach((n, i) => this.tone(n, 0.2, 'triangle', 0.08, i * 0.1)); }
 
-  // Nuevos sonidos para minijuegos
+  // Sonidos para minijuegos
   playPop() {
     const ctx = this.ensureCtx();
     if (!ctx) return;

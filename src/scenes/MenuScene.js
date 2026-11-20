@@ -12,7 +12,10 @@ export class MenuScene extends Phaser.Scene {
     soundManager.attach(this);
     soundManager.stopVoice();
     soundManager.playBGM('bgm_menu');
-    this.input.once('pointerdown', () => soundManager.playBGM('bgm_menu'));
+    this.input.once('pointerdown', () => {
+      soundManager.unlockAll();
+      soundManager.playBGM('bgm_menu');
+    });
 
     this.selectedDifficulty = 'challenge'; // 'challenge' o 'zen'
 
@@ -356,7 +359,7 @@ export class MenuScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const modal = this.add.container(0, 0).setDepth(60);
     modal.add(this.add.rectangle(width / 2, height / 2, width, height, 0x020617, 0.82).setInteractive());
-    modal.add(drawPanel(this, 220, 96, 520, 348, 0x0f172a, 0.98, 0x60a5fa));
+    modal.add(drawPanel(this, 210, 80, 540, 385, 0x0f172a, 0.98, 0x60a5fa));
 
     modal.add(this.add.text(width / 2, 134, 'Opciones del Juego', {
       fontFamily: 'Trebuchet MS, sans-serif',
@@ -404,11 +407,18 @@ export class MenuScene extends Phaser.Scene {
         b4.setLabel(dLabel());
       },
     });
-    const close = createButton(this, width / 2, 404, 160, 38, 'Listo', {
+
+    const tipText = this.add.text(width / 2, 395, '💡 En iPhone, desactiva el modo silencio (interruptor lateral) para volumen máximo', {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '11px',
+      color: '#93c5fd',
+    }).setOrigin(0.5);
+
+    const close = createButton(this, width / 2, 430, 160, 34, 'Listo', {
       fill: 0x16a34a,
       hover: 0x22c55e,
       onClick: () => modal.destroy(),
     });
-    modal.add([b1, b2, b3, b4, close]);
+    modal.add([b1, b2, b3, b4, tipText, close]);
   }
 }
