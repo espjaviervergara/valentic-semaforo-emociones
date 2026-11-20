@@ -986,60 +986,88 @@ export class MinigameScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-W', () => this.subwayJump());
     this.input.keyboard.on('keydown-SPACE', () => this.subwayJump());
 
-    // Botones táctiles visibles para celulares y tablets (diseño táctil de gran área)
-    const btnLeft = this.add.rectangle(75, height - 46, 74, 50, 0x0f172a, 0.88).setStrokeStyle(2, 0x38bdf8).setInteractive();
-    const txtLeft = this.add.text(75, height - 46, '◀ IZQ', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    btnLeft.on('pointerdown', () => {
+    // Barra de control táctil inferior aislada para celulares y tablets
+    const buttonBarY = height - 48;
+
+    const btnLeft = this.add.rectangle(80, buttonBarY, 80, 54, 0x0f172a, 0.9)
+      .setStrokeStyle(2, 0x38bdf8)
+      .setInteractive({ useHandCursor: true });
+    const txtLeft = this.add.text(80, buttonBarY, '◀ IZQ', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnLeft.on('pointerdown', (pointer) => {
+      pointer.isButtonTouch = true;
       btnLeft.setFillStyle(0x0284c7, 1);
       this.switchLane(-1);
     });
-    btnLeft.on('pointerup', () => btnLeft.setFillStyle(0x0f172a, 0.88));
-    btnLeft.on('pointerout', () => btnLeft.setFillStyle(0x0f172a, 0.88));
+    btnLeft.on('pointerup', (pointer) => {
+      if (pointer) pointer.isButtonTouch = true;
+      btnLeft.setFillStyle(0x0f172a, 0.9);
+    });
+    btnLeft.on('pointerout', () => btnLeft.setFillStyle(0x0f172a, 0.9));
 
-    const btnRight = this.add.rectangle(158, height - 46, 74, 50, 0x0f172a, 0.88).setStrokeStyle(2, 0x38bdf8).setInteractive();
-    const txtRight = this.add.text(158, height - 46, 'DER ▶', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    btnRight.on('pointerdown', () => {
+    const btnRight = this.add.rectangle(175, buttonBarY, 80, 54, 0x0f172a, 0.9)
+      .setStrokeStyle(2, 0x38bdf8)
+      .setInteractive({ useHandCursor: true });
+    const txtRight = this.add.text(175, buttonBarY, 'DER ▶', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnRight.on('pointerdown', (pointer) => {
+      pointer.isButtonTouch = true;
       btnRight.setFillStyle(0x0284c7, 1);
       this.switchLane(1);
     });
-    btnRight.on('pointerup', () => btnRight.setFillStyle(0x0f172a, 0.88));
-    btnRight.on('pointerout', () => btnRight.setFillStyle(0x0f172a, 0.88));
+    btnRight.on('pointerup', (pointer) => {
+      if (pointer) pointer.isButtonTouch = true;
+      btnRight.setFillStyle(0x0f172a, 0.9);
+    });
+    btnRight.on('pointerout', () => btnRight.setFillStyle(0x0f172a, 0.9));
 
-    const btnJump = this.add.rectangle(width - 90, height - 46, 125, 52, 0x16a34a, 0.9).setStrokeStyle(2, 0x86efac).setInteractive();
-    const txtJump = this.add.text(width - 90, height - 46, 'SALTAR ⬆', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    btnJump.on('pointerdown', () => {
+    const btnJump = this.add.rectangle(width - 95, buttonBarY, 135, 54, 0x16a34a, 0.92)
+      .setStrokeStyle(2, 0x86efac)
+      .setInteractive({ useHandCursor: true });
+    const txtJump = this.add.text(width - 95, buttonBarY, 'SALTAR ⬆', { fontSize: '16px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnJump.on('pointerdown', (pointer) => {
+      pointer.isButtonTouch = true;
       btnJump.setFillStyle(0x15803d, 1);
       this.subwayJump();
     });
-    btnJump.on('pointerup', () => btnJump.setFillStyle(0x16a34a, 0.9));
-    btnJump.on('pointerout', () => btnJump.setFillStyle(0x16a34a, 0.9));
+    btnJump.on('pointerup', (pointer) => {
+      if (pointer) pointer.isButtonTouch = true;
+      btnJump.setFillStyle(0x16a34a, 0.92);
+    });
+    btnJump.on('pointerout', () => btnJump.setFillStyle(0x16a34a, 0.92));
 
     this.uiLayer.add([btnLeft, txtLeft, btnRight, txtRight, btnJump, txtJump]);
 
-    // Soporte táctil por deslizamiento o toque directo sobre los 3 carriles
+    // Gestos de deslizamiento (swipe) exclusivos en el área de la pista (lejos de los botones)
     this.input.on('pointerdown', (pointer) => {
-      if (pointer.y > height - 75) return;
-      this.touchStartX = pointer.x;
-      this.touchStartY = pointer.y;
+      if (pointer.y >= height - 90 || pointer.isButtonTouch) return;
+      pointer.trackStartX = pointer.x;
+      pointer.trackStartY = pointer.y;
     });
 
     this.input.on('pointerup', (pointer) => {
-      if (pointer.y > height - 75 && this.touchStartY > height - 75) return;
-      const startX = this.touchStartX !== undefined ? this.touchStartX : pointer.x;
-      const startY = this.touchStartY !== undefined ? this.touchStartY : pointer.y;
-      const dx = pointer.x - startX;
-      const dy = pointer.y - startY;
-
-      if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) {
-        this.switchLane(dx > 0 ? 1 : -1);
-      } else if (dy < -35) {
-        this.subwayJump();
-      } else if (Math.abs(dx) <= 20 && Math.abs(dy) <= 20 && pointer.y < height - 75) {
-        // Toque directo en el tercio de carril correspondiente
-        if (pointer.x < width * 0.36) this.setLane(0);
-        else if (pointer.x > width * 0.64) this.setLane(2);
-        else this.setLane(1);
+      if (pointer.isButtonTouch) {
+        pointer.isButtonTouch = false;
+        pointer.trackStartX = null;
+        pointer.trackStartY = null;
+        return;
       }
+      if (pointer.trackStartX === undefined || pointer.trackStartX === null) return;
+
+      const dx = pointer.x - pointer.trackStartX;
+      const dy = pointer.y - pointer.trackStartY;
+      pointer.trackStartX = null;
+      pointer.trackStartY = null;
+
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        this.switchLane(dx > 0 ? 1 : -1);
+      } else if (dy < -40 && Math.abs(dy) > Math.abs(dx)) {
+        this.subwayJump();
+      }
+    });
+
+    this.input.on('pointercancel', (pointer) => {
+      pointer.isButtonTouch = false;
+      pointer.trackStartX = null;
+      pointer.trackStartY = null;
     });
 
     // Spawners
@@ -1053,7 +1081,8 @@ export class MinigameScene extends Phaser.Scene {
     if (clamped !== this.currentLane) {
       this.currentLane = clamped;
       soundManager.playStep();
-      this.tweens.add({
+      if (this.laneTween) this.laneTween.stop();
+      this.laneTween = this.tweens.add({
         targets: this.valentic,
         x: this.laneX[this.currentLane],
         duration: 130,
@@ -1068,10 +1097,11 @@ export class MinigameScene extends Phaser.Scene {
     if (target !== this.currentLane) {
       this.currentLane = target;
       soundManager.playStep();
-      this.tweens.add({
+      if (this.laneTween) this.laneTween.stop();
+      this.laneTween = this.tweens.add({
         targets: this.valentic,
         x: this.laneX[this.currentLane],
-        duration: 140,
+        duration: 130,
         ease: 'Cubic.easeOut',
       });
     }
