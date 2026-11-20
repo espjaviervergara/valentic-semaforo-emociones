@@ -73,7 +73,7 @@ export class BootScene extends Phaser.Scene {
       this.load.audio(bk, `./assets/audio/bgm/${bk}.m4a`);
     });
 
-    // Voces RPG · Día 1 y Tutorial (MP3)
+    // Voces RPG · Día 1 y Tutorial (AAC M4A con fallback MP3)
     [
       'pro_1', 'pro_2', 'pro_3', 'pro_4',
       'tut_welcome', 'tut_backpack', 'tut_mirror_prompt', 'tut_mirror_done', 'tut_door_hint',
@@ -88,7 +88,10 @@ export class BootScene extends Phaser.Scene {
       'colegio_patio_prov', 'colegio_patio_red_tip', 'colegio_patio_dec_prompt',
       'colegio_patio_shadow', 'colegio_patio_cnv_clean', 'colegio_patio_good', 'colegio_patio_bad',
     ].forEach((vk) => {
-      this.load.audio(vk, `./assets/audio/voices/${vk}.mp3`);
+      this.load.audio(vk, [
+        `./assets/audio/voices/${vk}.m4a`,
+        `./assets/audio/voices/${vk}.mp3`,
+      ]);
     });
 
     // Voces RPG · Días 2 al 5 y Diarios (AAC M4A en alta fidelidad)

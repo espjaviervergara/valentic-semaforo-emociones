@@ -129,6 +129,41 @@ export class MinigameScene extends Phaser.Scene {
       }).setOrigin(0.5);
       this.uiLayer.add(this.scoreText);
     }
+
+    // Banner de ayuda intuitiva para celulares, tablets y PC
+    let hint = 'Toca la pantalla o usa ESPACIO para volar';
+    if (this.minigameType === 'popcorn') hint = 'Toca las palomitas doradas 🍿 · ¡Evita las bombas 💣!';
+    if (this.minigameType === 'river') hint = 'Usa ▲ ▼, arrastra o toca el agua para nadar';
+    if (this.minigameType === 'mario') hint = 'Usa ◀ ▶ para correr y SALTAR ⬆ (o flechas y ESPACIO)';
+    if (this.minigameType === 'subway') hint = 'Toca ◀ IZQ / DER ▶, desliza o toca las vías · SALTAR ⬆';
+    this.showInstructionBanner(hint);
+  }
+
+  showInstructionBanner(text) {
+    const { width } = this.scale;
+    const banner = this.add.container(width / 2, 60).setDepth(45);
+    const bg = this.add.graphics();
+    bg.fillStyle(0x0f172a, 0.88);
+    bg.fillRoundedRect(-240, -16, 480, 32, 16);
+    bg.lineStyle(1.5, 0x38bdf8, 0.9);
+    bg.strokeRoundedRect(-240, -16, 480, 32, 16);
+    const txt = this.add.text(0, 0, `🎮 ${text}`, {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '13px',
+      fontStyle: 'bold',
+      color: '#f8fafc',
+    }).setOrigin(0.5);
+    banner.add([bg, txt]);
+    this.uiLayer.add(banner);
+
+    this.tweens.add({
+      targets: banner,
+      alpha: 0,
+      y: 44,
+      delay: 3800,
+      duration: 600,
+      onComplete: () => banner.destroy(),
+    });
   }
 
   getHeartsString() {
@@ -335,6 +370,22 @@ export class MinigameScene extends Phaser.Scene {
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
 
+    // Botón táctil grande visible en pantalla para celulares y tablets
+    const btnFlap = this.add.rectangle(width - 85, height - 48, 130, 50, 0x16a34a, 0.9)
+      .setStrokeStyle(2, 0x86efac)
+      .setInteractive({ useHandCursor: true });
+    const btnFlapTxt = this.add.text(width - 85, height - 48, 'VOLAR ⬆', {
+      fontFamily: 'Trebuchet MS, sans-serif',
+      fontSize: '16px',
+      fontStyle: 'bold',
+      color: '#ffffff',
+    }).setOrigin(0.5);
+    btnFlap.on('pointerdown', () => { flap(); btnFlap.fillColor = 0x22c55e; });
+    const offFlap = () => { btnFlap.fillColor = 0x16a34a; };
+    btnFlap.on('pointerup', offFlap);
+    btnFlap.on('pointerout', offFlap);
+    this.uiLayer.add([btnFlap, btnFlapTxt]);
+
     this.time.addEvent({ delay: 1400, callback: () => this.spawnFlappyStar(), loop: true });
     this.time.addEvent({ delay: 2200, callback: () => this.spawnFlappyStorm(), loop: true });
   }
@@ -362,7 +413,11 @@ export class MinigameScene extends Phaser.Scene {
 
   updateFlappy(delta) {
     const { width, height } = this.scale;
-    if (Phaser.Input.Keyboard.JustDown(this.spaceKey) || Phaser.Input.Keyboard.JustDown(this.upKey)) {
+    if (
+      Phaser.Input.Keyboard.JustDown(this.spaceKey)
+      || Phaser.Input.Keyboard.JustDown(this.upKey)
+      || (this.wasd?.up && Phaser.Input.Keyboard.JustDown(this.wasd.up))
+    ) {
       this.valentic.vy = -5.4;
       soundManager.playJump();
     }
@@ -461,7 +516,8 @@ export class MinigameScene extends Phaser.Scene {
     p.vy = Phaser.Math.FloatBetween(-12, -8.5);
     p.popped = false;
 
-    const hit = this.add.circle(0, 0, 36, 0x000000, 0).setInteractive({ useHandCursor: true });
+    // Zona táctil amplia (radio 50px) para tocar fácilmente con el dedo en pantallas de celulares y tablets
+    const hit = this.add.circle(0, 0, 50, 0x000000, 0).setInteractive({ useHandCursor: true });
     hit.on('pointerdown', () => this.clickKernel(p));
     p.add(hit);
 
@@ -515,14 +571,42 @@ export class MinigameScene extends Phaser.Scene {
     this.gameLayer.add(this.valentic);
 
     this.riverItems = [];
+    this.targetRiverY = null;
+    this.riverTouch = { up: false, down: false };
 
-    this.input.on('pointermove', (pointer) => {
-      if (pointer.isDown && pointer.y > 45) {
-        this.valentic.y = Phaser.Math.Clamp(pointer.y, 60, height - 40);
+    // Botones táctiles grandes y visibles para celular y tablet
+    const btnUp = this.add.rectangle(75, height - 48, 85, 48, 0x0f172a, 0.85)
+      .setStrokeStyle(2, 0x38bdf8)
+      .setInteractive({ useHandCursor: true });
+    this.add.text(75, height - 48, '▲ SUBIR', { fontSize: '13px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnUp.on('pointerdown', () => { this.riverTouch.up = true; btnUp.fillColor = 0x0284c7; });
+    const offUp = () => { this.riverTouch.up = false; btnUp.fillColor = 0x0f172a; };
+    btnUp.on('pointerup', offUp);
+    btnUp.on('pointerout', offUp);
+
+    const btnDown = this.add.rectangle(170, height - 48, 85, 48, 0x0f172a, 0.85)
+      .setStrokeStyle(2, 0x38bdf8)
+      .setInteractive({ useHandCursor: true });
+    this.add.text(170, height - 48, '▼ BAJAR', { fontSize: '13px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnDown.on('pointerdown', () => { this.riverTouch.down = true; btnDown.fillColor = 0x0284c7; });
+    const offDown = () => { this.riverTouch.down = false; btnDown.fillColor = 0x0f172a; };
+    btnDown.on('pointerup', offDown);
+    btnDown.on('pointerout', offDown);
+
+    this.uiLayer.add([btnUp, btnDown]);
+
+    // Toque directo en el agua o arrastre con el dedo
+    const handleWaterTouch = (pointer) => {
+      if (pointer.y > 48 && (pointer.y < height - 70 || pointer.x > 260)) {
+        this.targetRiverY = Phaser.Math.Clamp(pointer.y, 60, height - 40);
       }
+    };
+    this.input.on('pointerdown', handleWaterTouch);
+    this.input.on('pointermove', (pointer) => {
+      if (pointer.isDown) handleWaterTouch(pointer);
     });
-    this.cursors = this.input.keyboard.createCursorKeys();
 
+    this.cursors = this.input.keyboard.createCursorKeys();
     this.time.addEvent({ delay: 1100, callback: () => this.spawnRiverItem(), loop: true });
   }
 
@@ -558,8 +642,23 @@ export class MinigameScene extends Phaser.Scene {
 
   updateRiver(delta) {
     const { height } = this.scale;
-    if (this.cursors.up.isDown) this.valentic.y = Math.max(60, this.valentic.y - 4.5);
-    if (this.cursors.down.isDown) this.valentic.y = Math.min(height - 40, this.valentic.y + 4.5);
+    if (this.riverTouch?.up || this.cursors.up.isDown || (this.wasd?.up && this.wasd.up.isDown)) {
+      this.targetRiverY = null;
+      this.valentic.y = Math.max(60, this.valentic.y - 4.8);
+    }
+    if (this.riverTouch?.down || this.cursors.down.isDown || (this.wasd?.down && this.wasd.down.isDown)) {
+      this.targetRiverY = null;
+      this.valentic.y = Math.min(height - 40, this.valentic.y + 4.8);
+    }
+    if (this.targetRiverY !== null) {
+      const dy = this.targetRiverY - this.valentic.y;
+      if (Math.abs(dy) > 3) {
+        this.valentic.y += Math.sign(dy) * Math.min(Math.abs(dy), 5.5);
+      } else {
+        this.valentic.y = this.targetRiverY;
+        this.targetRiverY = null;
+      }
+    }
 
     if (this.invulnerableTimer > 0) {
       this.invulnerableTimer -= delta;
@@ -678,26 +777,31 @@ export class MinigameScene extends Phaser.Scene {
 
   setupMarioTouchControls() {
     const { width, height } = this.scale;
-    const btnLeft = this.add.rectangle(60, height - 45, 55, 45, 0x0f172a, 0.75).setStrokeStyle(2, 0x60a5fa).setInteractive();
-    this.add.text(60, height - 45, '◀', { fontSize: '22px', color: '#ffffff' }).setOrigin(0.5);
+    const btnLeft = this.add.rectangle(68, height - 48, 68, 52, 0x0f172a, 0.85).setStrokeStyle(2, 0x60a5fa).setInteractive({ useHandCursor: true });
+    this.add.text(68, height - 48, '◀', { fontSize: '26px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
 
-    const btnRight = this.add.rectangle(135, height - 45, 55, 45, 0x0f172a, 0.75).setStrokeStyle(2, 0x60a5fa).setInteractive();
-    this.add.text(135, height - 45, '▶', { fontSize: '22px', color: '#ffffff' }).setOrigin(0.5);
+    const btnRight = this.add.rectangle(148, height - 48, 68, 52, 0x0f172a, 0.85).setStrokeStyle(2, 0x60a5fa).setInteractive({ useHandCursor: true });
+    this.add.text(148, height - 48, '▶', { fontSize: '26px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
 
-    const btnJump = this.add.rectangle(width - 80, height - 45, 95, 48, 0x16a34a, 0.85).setStrokeStyle(2, 0x86efac).setInteractive();
-    this.add.text(width - 80, height - 45, 'SALTAR ⬆', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    const btnJump = this.add.rectangle(width - 85, height - 48, 125, 52, 0x16a34a, 0.9).setStrokeStyle(2, 0x86efac).setInteractive({ useHandCursor: true });
+    this.add.text(width - 85, height - 48, 'SALTAR ⬆', { fontSize: '16px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
 
     this.marioTouch = { left: false, right: false, jump: false };
 
-    btnLeft.on('pointerdown', () => { this.marioTouch.left = true; });
-    btnLeft.on('pointerup', () => { this.marioTouch.left = false; });
-    btnLeft.on('pointerout', () => { this.marioTouch.left = false; });
+    btnLeft.on('pointerdown', () => { this.marioTouch.left = true; btnLeft.fillColor = 0x2563eb; });
+    const offLeft = () => { this.marioTouch.left = false; btnLeft.fillColor = 0x0f172a; };
+    btnLeft.on('pointerup', offLeft);
+    btnLeft.on('pointerout', offLeft);
 
-    btnRight.on('pointerdown', () => { this.marioTouch.right = true; });
-    btnRight.on('pointerup', () => { this.marioTouch.right = false; });
-    btnRight.on('pointerout', () => { this.marioTouch.right = false; });
+    btnRight.on('pointerdown', () => { this.marioTouch.right = true; btnRight.fillColor = 0x2563eb; });
+    const offRight = () => { this.marioTouch.right = false; btnRight.fillColor = 0x0f172a; };
+    btnRight.on('pointerup', offRight);
+    btnRight.on('pointerout', offRight);
 
-    btnJump.on('pointerdown', () => { this.marioJump(); });
+    btnJump.on('pointerdown', () => { this.marioJump(); btnJump.fillColor = 0x22c55e; });
+    const offJump = () => { btnJump.fillColor = 0x16a34a; };
+    btnJump.on('pointerup', offJump);
+    btnJump.on('pointerout', offJump);
 
     this.uiLayer.add([btnLeft, btnRight, btnJump]);
   }
@@ -841,40 +945,80 @@ export class MinigameScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-W', () => this.subwayJump());
     this.input.keyboard.on('keydown-SPACE', () => this.subwayJump());
 
-    // Botones táctiles visibles para celulares y tablets
-    const btnLeft = this.add.rectangle(70, height - 45, 60, 44, 0x0f172a, 0.8).setStrokeStyle(2, 0x38bdf8).setInteractive();
-    this.add.text(70, height - 45, '◀ IZQ', { fontSize: '14px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    btnLeft.on('pointerdown', () => this.switchLane(-1));
+    // Botones táctiles visibles para celulares y tablets (diseño táctil de gran área)
+    const btnLeft = this.add.rectangle(75, height - 46, 74, 50, 0x0f172a, 0.88).setStrokeStyle(2, 0x38bdf8).setInteractive();
+    const txtLeft = this.add.text(75, height - 46, '◀ IZQ', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnLeft.on('pointerdown', () => {
+      btnLeft.setFillStyle(0x0284c7, 1);
+      this.switchLane(-1);
+    });
+    btnLeft.on('pointerup', () => btnLeft.setFillStyle(0x0f172a, 0.88));
+    btnLeft.on('pointerout', () => btnLeft.setFillStyle(0x0f172a, 0.88));
 
-    const btnRight = this.add.rectangle(145, height - 45, 60, 44, 0x0f172a, 0.8).setStrokeStyle(2, 0x38bdf8).setInteractive();
-    this.add.text(145, height - 45, 'DER ▶', { fontSize: '14px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    btnRight.on('pointerdown', () => this.switchLane(1));
+    const btnRight = this.add.rectangle(158, height - 46, 74, 50, 0x0f172a, 0.88).setStrokeStyle(2, 0x38bdf8).setInteractive();
+    const txtRight = this.add.text(158, height - 46, 'DER ▶', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnRight.on('pointerdown', () => {
+      btnRight.setFillStyle(0x0284c7, 1);
+      this.switchLane(1);
+    });
+    btnRight.on('pointerup', () => btnRight.setFillStyle(0x0f172a, 0.88));
+    btnRight.on('pointerout', () => btnRight.setFillStyle(0x0f172a, 0.88));
 
-    const btnJump = this.add.rectangle(width - 85, height - 45, 100, 46, 0x16a34a, 0.85).setStrokeStyle(2, 0x86efac).setInteractive();
-    this.add.text(width - 85, height - 45, 'SALTAR ⬆', { fontSize: '14px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    btnJump.on('pointerdown', () => this.subwayJump());
+    const btnJump = this.add.rectangle(width - 90, height - 46, 125, 52, 0x16a34a, 0.9).setStrokeStyle(2, 0x86efac).setInteractive();
+    const txtJump = this.add.text(width - 90, height - 46, 'SALTAR ⬆', { fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    btnJump.on('pointerdown', () => {
+      btnJump.setFillStyle(0x15803d, 1);
+      this.subwayJump();
+    });
+    btnJump.on('pointerup', () => btnJump.setFillStyle(0x16a34a, 0.9));
+    btnJump.on('pointerout', () => btnJump.setFillStyle(0x16a34a, 0.9));
 
-    this.uiLayer.add([btnLeft, btnRight, btnJump]);
+    this.uiLayer.add([btnLeft, txtLeft, btnRight, txtRight, btnJump, txtJump]);
 
-    // Soporte táctil por deslizamiento o toques
+    // Soporte táctil por deslizamiento o toque directo sobre los 3 carriles
     this.input.on('pointerdown', (pointer) => {
+      if (pointer.y > height - 75) return;
       this.touchStartX = pointer.x;
       this.touchStartY = pointer.y;
     });
 
     this.input.on('pointerup', (pointer) => {
-      const dx = pointer.x - this.touchStartX;
-      const dy = pointer.y - this.touchStartY;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (pointer.y > height - 75 && this.touchStartY > height - 75) return;
+      const startX = this.touchStartX !== undefined ? this.touchStartX : pointer.x;
+      const startY = this.touchStartY !== undefined ? this.touchStartY : pointer.y;
+      const dx = pointer.x - startX;
+      const dy = pointer.y - startY;
+
+      if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) {
         this.switchLane(dx > 0 ? 1 : -1);
-      } else if (dy < -40) {
+      } else if (dy < -35) {
         this.subwayJump();
+      } else if (Math.abs(dx) <= 20 && Math.abs(dy) <= 20 && pointer.y < height - 75) {
+        // Toque directo en el tercio de carril correspondiente
+        if (pointer.x < width * 0.36) this.setLane(0);
+        else if (pointer.x > width * 0.64) this.setLane(2);
+        else this.setLane(1);
       }
     });
 
     // Spawners
     this.time.addEvent({ delay: 1100, callback: () => this.spawnSubwayObstacle(), loop: true });
     this.time.addEvent({ delay: 700, callback: () => this.spawnSubwayCoin(), loop: true });
+  }
+
+  setLane(target) {
+    if (this.isGameOver) return;
+    const clamped = Phaser.Math.Clamp(target, 0, 2);
+    if (clamped !== this.currentLane) {
+      this.currentLane = clamped;
+      soundManager.playStep();
+      this.tweens.add({
+        targets: this.valentic,
+        x: this.laneX[this.currentLane],
+        duration: 130,
+        ease: 'Cubic.easeOut',
+      });
+    }
   }
 
   switchLane(dir) {
