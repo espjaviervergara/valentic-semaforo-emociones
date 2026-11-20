@@ -12,6 +12,7 @@ class SoundManager {
     this.bgm = null;
     this.voiceKey = null;
     this.voice = null;
+    this._unlockRegistered = false;
   }
 
   attach(scene) {
@@ -19,6 +20,24 @@ class SoundManager {
     this.phaserSound = scene.sound;
     this.cacheAudio = scene.cache?.audio;
     this.syncVolumes();
+    this.ensureUnlock();
+  }
+
+  ensureUnlock() {
+    if (this._unlockRegistered || typeof window === 'undefined') return;
+    this._unlockRegistered = true;
+    const unlock = () => {
+      this.ensureCtx();
+      if (this.phaserSound && this.phaserSound.locked) {
+        try { this.phaserSound.unlock(); } catch (e) {}
+      }
+      if (this.bgm && !this.bgm.isPlaying && !gameState.save.settings.muted) {
+        try { this.bgm.play({ loop: true, volume: BGM_VOL }); } catch (e) {}
+      }
+    };
+    ['pointerdown', 'touchstart', 'touchend', 'click'].forEach((evt) => {
+      window.addEventListener(evt, unlock, { passive: true });
+    });
   }
 
   syncVolumes() {
@@ -39,6 +58,10 @@ class SoundManager {
 
   playBGM(key) {
     if (!this.phaserSound || !this.cacheAudio?.exists(key)) return;
+    this.ensureCtx();
+    if (this.phaserSound.locked) {
+      try { this.phaserSound.unlock(); } catch (e) {}
+    }
     if (this.bgmKey === key && this.bgm) {
       if (!this.bgm.isPlaying) {
         this.bgm.play({ loop: true, volume: gameState.save.settings.muted ? 0 : BGM_VOL });
@@ -85,6 +108,11 @@ class SoundManager {
     ) {
       if (onComplete) onComplete();
       return;
+    }
+
+    this.ensureCtx();
+    if (this.phaserSound.locked) {
+      try { this.phaserSound.unlock(); } catch (e) {}
     }
 
     const v = this.phaserSound.add(key, { volume: 0.95 });

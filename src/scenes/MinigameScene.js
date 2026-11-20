@@ -26,6 +26,11 @@ export class MinigameScene extends Phaser.Scene {
     soundManager.attach(this);
     soundManager.playBGM('bgm_hogar');
 
+    // Habilitar múltiples punteros táctiles para soportar gestos con ambas manos (ej: correr + saltar)
+    if (this.input.pointersTotal < 4) {
+      this.input.addPointer(3);
+    }
+
     // Inicializar entradas del teclado globales para todos los minijuegos
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -777,31 +782,67 @@ export class MinigameScene extends Phaser.Scene {
 
   setupMarioTouchControls() {
     const { width, height } = this.scale;
-    const btnLeft = this.add.rectangle(68, height - 48, 68, 52, 0x0f172a, 0.85).setStrokeStyle(2, 0x60a5fa).setInteractive({ useHandCursor: true });
-    this.add.text(68, height - 48, '◀', { fontSize: '26px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    // Asegurar soporte multi-touch para pulsar dirección y salto simultáneamente
+    if (this.input.pointersTotal < 4) {
+      this.input.addPointer(3);
+    }
 
-    const btnRight = this.add.rectangle(148, height - 48, 68, 52, 0x0f172a, 0.85).setStrokeStyle(2, 0x60a5fa).setInteractive({ useHandCursor: true });
-    this.add.text(148, height - 48, '▶', { fontSize: '26px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    const btnLeft = this.add.rectangle(75, height - 48, 80, 56, 0x0f172a, 0.88).setStrokeStyle(2, 0x60a5fa).setInteractive({ useHandCursor: true });
+    this.add.text(75, height - 48, '◀', { fontSize: '28px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
 
-    const btnJump = this.add.rectangle(width - 85, height - 48, 125, 52, 0x16a34a, 0.9).setStrokeStyle(2, 0x86efac).setInteractive({ useHandCursor: true });
-    this.add.text(width - 85, height - 48, 'SALTAR ⬆', { fontSize: '16px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    const btnRight = this.add.rectangle(168, height - 48, 80, 56, 0x0f172a, 0.88).setStrokeStyle(2, 0x60a5fa).setInteractive({ useHandCursor: true });
+    this.add.text(168, height - 48, '▶', { fontSize: '28px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
 
-    this.marioTouch = { left: false, right: false, jump: false };
+    const btnJump = this.add.rectangle(width - 95, height - 48, 140, 56, 0x16a34a, 0.92).setStrokeStyle(2, 0x86efac).setInteractive({ useHandCursor: true });
+    this.add.text(width - 95, height - 48, 'SALTAR ⬆', { fontSize: '17px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
 
-    btnLeft.on('pointerdown', () => { this.marioTouch.left = true; btnLeft.fillColor = 0x2563eb; });
-    const offLeft = () => { this.marioTouch.left = false; btnLeft.fillColor = 0x0f172a; };
-    btnLeft.on('pointerup', offLeft);
-    btnLeft.on('pointerout', offLeft);
+    this.marioTouch = { left: false, right: false, leftPointerId: null, rightPointerId: null };
 
-    btnRight.on('pointerdown', () => { this.marioTouch.right = true; btnRight.fillColor = 0x2563eb; });
-    const offRight = () => { this.marioTouch.right = false; btnRight.fillColor = 0x0f172a; };
-    btnRight.on('pointerup', offRight);
-    btnRight.on('pointerout', offRight);
+    btnLeft.on('pointerdown', (pointer) => {
+      this.marioTouch.left = true;
+      this.marioTouch.leftPointerId = pointer.id;
+      btnLeft.fillColor = 0x2563eb;
+    });
 
-    btnJump.on('pointerdown', () => { this.marioJump(); btnJump.fillColor = 0x22c55e; });
-    const offJump = () => { btnJump.fillColor = 0x16a34a; };
-    btnJump.on('pointerup', offJump);
-    btnJump.on('pointerout', offJump);
+    btnRight.on('pointerdown', (pointer) => {
+      this.marioTouch.right = true;
+      this.marioTouch.rightPointerId = pointer.id;
+      btnRight.fillColor = 0x2563eb;
+    });
+
+    btnJump.on('pointerdown', () => {
+      btnJump.fillColor = 0x22c55e;
+      this.marioJump();
+    });
+    btnJump.on('pointerup', () => { btnJump.fillColor = 0x16a34a; });
+    btnJump.on('pointerout', () => { btnJump.fillColor = 0x16a34a; });
+
+    // Liberar izquierda / derecha únicamente cuando el dedo que lo presionó se levanta
+    this.input.on('pointerup', (pointer) => {
+      if (pointer.id === this.marioTouch.leftPointerId) {
+        this.marioTouch.left = false;
+        this.marioTouch.leftPointerId = null;
+        btnLeft.fillColor = 0x0f172a;
+      }
+      if (pointer.id === this.marioTouch.rightPointerId) {
+        this.marioTouch.right = false;
+        this.marioTouch.rightPointerId = null;
+        btnRight.fillColor = 0x0f172a;
+      }
+    });
+
+    this.input.on('pointercancel', (pointer) => {
+      if (pointer.id === this.marioTouch.leftPointerId) {
+        this.marioTouch.left = false;
+        this.marioTouch.leftPointerId = null;
+        btnLeft.fillColor = 0x0f172a;
+      }
+      if (pointer.id === this.marioTouch.rightPointerId) {
+        this.marioTouch.right = false;
+        this.marioTouch.rightPointerId = null;
+        btnRight.fillColor = 0x0f172a;
+      }
+    });
 
     this.uiLayer.add([btnLeft, btnRight, btnJump]);
   }

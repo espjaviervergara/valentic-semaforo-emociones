@@ -14,6 +14,9 @@ const config = {
   pixelArt: false,
   roundPixels: true,
   antialias: true,
+  input: {
+    activePointers: 4,
+  },
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
